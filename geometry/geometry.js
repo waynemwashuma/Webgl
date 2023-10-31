@@ -2,16 +2,28 @@ import { createVAO } from "../functions.js"
 
 export class Geometry {
   constructor(positions = [], indices, normals, uv) {
-    this.indices = indices
-    this.positions = positions
-    this.normals = normals
-    this.uv = uv
-    this.attr = null
+    this._VAO = null
+    this._attribute = {}
   }
   /**
    * @param {WebGL2RenderingContext} gl
    */
   init(gl) {
-    this.attr = createVAO(gl, this.indices, this.positions, this.normals, this.uv)
+    this._VAO = createVAO(gl,
+      this._attribute["indices"],
+      this._attribute["position"],
+      this._attribute["normal"],
+      this._attribute["uv"]
+    )
+  }
+  setAttribute(name, attribute) {
+    this.attribute[name] = attribute
+    return this
+  }
+  get attribute() {
+    return this._attribute
+  }
+  get attr(){
+    return this._VAO
   }
 }
