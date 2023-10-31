@@ -1,6 +1,6 @@
 import { Geometry } from "./geometry.js"
 
-export class PlaneGeometry extends Geometry {
+export class QuadGeometry extends Geometry {
   constructor(w, h) {
     super()
     let indices = [
