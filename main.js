@@ -12,7 +12,7 @@ import { Shader } from "./material/index.js"
 import {
   BoxGeometry,
   Geometry,
-  PlaneGeometry
+  QuadGeometry
 } from "./geometry/index.js"
 import { Matrix } from "/math/Matrix.js"
 import { Vector } from "/math/Vector.js"
