@@ -6,14 +6,7 @@ import {
   ATTR_NORMAL_NAME,
   ATTR_UV_NAME
 } from "./constants.js"
-import {
-  clear,
-  setViewport,
-  createBuffer,
-  createProgram,
-  createshader,
-  createVAO
-} from "./functions.js"
+
 import { Mesh } from "./meshes/mesh.js"
 import { Shader } from "./material/index.js"
 import {
@@ -58,7 +51,7 @@ void main(){
 
 `
 let camera = new Camera()
-let m = new Mesh(new PlaneGeometry([0, -0.4, 0, 0.4, 0.4, 0, -0.4, 0.4, 0], [0, 1, 2]), new Shader(vshader, fshader, {
+let m = new Mesh(new BoxGeometry(), new Shader(vshader, fshader, {
   pointSize: {
     value: 50.0,
     type: "1f"
@@ -69,7 +62,7 @@ renderer.camera = camera
 renderer.add(m)
 renderer.setViewport(300, 300)
 
-camera.makePerspective(90)
+camera.makePerspective(120)
 //camera.updateProjection()
 camera.transform.position.z = 3
 
