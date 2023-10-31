@@ -94,6 +94,6 @@ export class BoxGeometry extends Geometry {
 		]
     this.setAttribute("indices", indices)
     this.setAttribute("position", vertices)
-    this.setAttribute("uv", uvs)
+    this.setAttribute("uv", uv)
   }
 }
