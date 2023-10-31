@@ -61,6 +61,7 @@ let m = new Mesh(new BoxGeometry(), new Shader(vshader, fshader, {
 renderer.camera = camera
 renderer.add(m)
 renderer.setViewport(300, 300)
+//renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
 //camera.updateProjection()
