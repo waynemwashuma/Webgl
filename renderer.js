@@ -1,3 +1,5 @@
+import {Camera} from "./camera.js"
+
 export class Renderer {
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
@@ -6,7 +8,7 @@ export class Renderer {
      */
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    this.camera = null
+    this.camera = new Camera()
     this.meshes = []
   }
   add(mesh) {

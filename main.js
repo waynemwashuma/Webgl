@@ -20,8 +20,9 @@ import { Camera } from "/camera.js"
 import { Renderer } from "./renderer.js"
 
 let canvas = document.getElementById("can")
-
 let renderer = new Renderer(canvas)
+let camera = renderer.camera
+
 let vshader =
   `precision mediump float;
 
@@ -50,7 +51,6 @@ void main(){
 }
 
 `
-let camera = new Camera()
 let m = new Mesh(new BoxGeometry(), new Shader(vshader, fshader, {
   pointSize: {
     value: 50.0,
@@ -58,7 +58,7 @@ let m = new Mesh(new BoxGeometry(), new Shader(vshader, fshader, {
   }
 }))
 
-renderer.camera = camera
+
 renderer.add(m)
 renderer.setViewport(300, 300)
 //renderer.setViewport(innerWidth, innerHeight)
