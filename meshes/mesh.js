@@ -14,6 +14,7 @@ export class Mesh {
   init(gl) {
     this.geometry.init(gl)
     this.material.init(gl)
+    console.log(this.geometry.attributes)
   }
   update() {
     this.transform.updateMatrix()
@@ -22,21 +23,40 @@ export class Mesh {
    * @param {WebGL2RenderingContext} gl
    */
   renderGL(gl, camera, projection) {
-    let m = this.material
-    
-    this.material.activate(gl)
-    gl.bindVertexArray(this.geometry.attr.vao)
+    let material = this.material
+    let geometry = this.geometry
+    let attributes = geometry.attributes
+
+    //TODO - make this a prop of material.
+    let drawMode = gl.LINE_LOOP
+
+    //preping uniforms and activating program
+    material.activate(gl)
+    gl.bindVertexArray(this.geometry.VAO)
+
     gl.uniformMatrix4fv(
-      m.uniformLoc[UNI_CAM_MAT], false, camera.raw
+      material.uniformLoc[UNI_CAM_MAT], false, camera.raw
     )
     gl.uniformMatrix4fv(
-      m.uniformLoc[UNI_PROJ_MAT], false, projection.raw
+      material.uniformLoc[UNI_PROJ_MAT], false, projection.raw
     )
     gl.uniformMatrix4fv(
-      m.uniformLoc[UNI_MODEL_MAT], false, this.transform.matrix.raw
+      material.uniformLoc[UNI_MODEL_MAT], false, this.transform.matrix.raw
     )
-    this.material.renderGL(gl, this.geometry.attr)
-    this.material.deactivate(gl)
+
+    //drawing
+    if (attributes.indices) {
+      gl.drawElements(drawMode,
+        attributes["indices"].count,
+        gl.UNSIGNED_SHORT, 0
+      );
+    } else {
+      gl.drawArrays(drawMode, 0,
+        attributes['position'].count
+      )
+    }
     gl.bindVertexArray(null)
+    material.deactivate(gl)
+    
   }
 }

@@ -26,8 +26,8 @@ let camera = renderer.camera
 let vshader =
   `precision mediump float;
 
-attribute vec3 a_position;
-attribute vec3 a_normal;
+attribute vec3 position;
+attribute vec3 normal;
 uniform float pointSize;
 uniform mat4 uCamera;
 uniform mat4 uProjection;
@@ -36,8 +36,8 @@ varying vec3 color;
 
 void main(){
   gl_PointSize = pointSize;
-  gl_Position = uProjection * uCamera * uModel * vec4(a_position,1.0);
-  color = a_normal;
+  gl_Position = uProjection * uCamera * uModel * vec4(position,1.0);
+  color = normal;
 }
 
 `

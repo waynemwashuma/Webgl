@@ -1,9 +1,11 @@
 import { Geometry } from "./geometry.js"
+import {Attribute} from "../attributes/index.js"
+
 
 export class BoxGeometry extends Geometry {
   constructor(w = 1, h = 1, l = 1) {
     super()
-    let vertices = [
+    let vertices = new Attribute([
 		// Top
 		-0.5 * w, 0.5 * h, -0.5 * l,
 		-0.5 * w, 0.5 * h, 0.5 * l,
@@ -39,8 +41,8 @@ export class BoxGeometry extends Geometry {
 		-0.5 * w, -0.5 * h, 0.5 * l,
 		0.5 * w, -0.5 * h, 0.5 * l,
 		0.5 * w, -0.5 * h, -0.5 * l,
-		];
-    let uv = [
+		],3);
+    let uv = new Attribute([
 	    0, 0,
 	    0, 1,
 	    1, 1,
@@ -65,9 +67,9 @@ export class BoxGeometry extends Geometry {
 	    1, 0,
 	    0, 0,
 	    0, 1
-	  ]
+	  ],2)
 
-    let indices = [
+    let indices = new Attribute([
       // Top
       0, 1, 2,
       0, 2, 3,
@@ -91,7 +93,7 @@ export class BoxGeometry extends Geometry {
       // Bottom
       21, 20, 22,
       22, 20, 23
-		]
+		],1)
     this.setAttribute("indices", indices)
     this.setAttribute("position", vertices)
     this.setAttribute("uv", uv)

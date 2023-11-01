@@ -51,16 +51,16 @@ export class Shader {
     gl.useProgram(null)
   }
   setUniform(name, value) {
-    this.uniforms[name].value = value
+    if (name in this.uniforms)
+      this.uniforms[name].value = value
   }
   /**
    * @param {WebGL2RenderingContext} gl
    */
   renderGL(gl, attr) {
-    //attr.drawMode = gl.LINE_LOOP
     if (attr.attributes.indices) {
-      gl.drawElements(attr.drawMode, attr.attributes.indices.count, gl.UNSIGNED_SHORT,0);
-      //console.log(attr.attributes.indices.count)
+      gl.drawElements(attr.drawMode, attr.attributes.indices.count, gl.UNSIGNED_SHORT, 0);
+      console.log(attr.attributes.indices.count)
     } else {
       gl.drawArrays(attr.drawMode, 0, attr.attributes.position.count)
 
