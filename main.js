@@ -28,18 +28,18 @@ let vshader =
 
 attribute vec3 position;
 attribute vec3 normal;
-uniform float pointSize;
 uniform mat4 uCamera;
 uniform mat4 uProjection;
 uniform mat4 uModel;
+uniform float pointSize;
 varying vec3 color;
 
 void main(){
   gl_PointSize = pointSize;
-  gl_Position = uProjection * uCamera * uModel * vec4(position,1.0);
+  gl_Position = uProjection *uCamera * uModel * vec4(position,1.0);
+  //gl_Position = uModel * vec4(position,1.0);
   color = normal;
 }
-
 `
 let fshader =
   `precision mediump float;
@@ -49,15 +49,10 @@ varying vec3 color;
 void main(){
   gl_FragColor = vec4(1.0,1.0,0.0,1.0);
 }
-
 `
 let m = new Mesh(new BoxGeometry(), new Shader(vshader, fshader, {
-  pointSize: {
-    value: 50.0,
-    type: "1f"
-  }
+  pointSize: 50.01
 }))
-
 
 renderer.add(m)
 renderer.setViewport(300, 300)

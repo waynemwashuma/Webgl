@@ -1,4 +1,4 @@
-import {Camera} from "./camera.js"
+import { Camera } from "./camera.js"
 
 export class Renderer {
   constructor(canvas) {
@@ -12,14 +12,14 @@ export class Renderer {
     this.meshes = []
   }
   add(mesh) {
-    mesh.init(this.gl)
+    mesh.init(this.gl, this.camera)
     this.meshes.push(mesh)
   }
   remove(mesh) {
     let id = this.meshes.indexOf(mesh)
     this.meshes.splice(id, 1)
   }
-  clear(){
+  clear() {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
   }
   update() {

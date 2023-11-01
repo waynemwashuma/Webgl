@@ -7,3 +7,16 @@ export let ATTR_UV_LOC = 2
 export const UNI_PROJ_MAT = "uProjection"
 export const UNI_CAM_MAT = "uCamera"
 export const UNI_MODEL_MAT = "uModel"
+
+export const UniformTypes = {
+  BOOL : 0,
+  FLOAT : 1,
+  INT : 2,
+  VEC2 : 3,
+  VEC3 : 4,
+  VEC4 : 5,
+  MAT2 : 6,
+  MAT3 : 7,
+  MAT4 : 8
+}
+//console.log(UniformTypes);

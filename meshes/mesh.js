@@ -2,7 +2,8 @@ import { Transform } from "../math/transform.js"
 import {
   UNI_CAM_MAT,
   UNI_PROJ_MAT,
-  UNI_MODEL_MAT
+  UNI_MODEL_MAT,
+  ATTR_POSITION_NAME
 } from "../constants.js"
 
 export class Mesh {
@@ -11,18 +12,21 @@ export class Mesh {
     this.geometry = geometry
     this.material = material
   }
-  init(gl) {
+  init(gl,camera) {
+    this.material.setUniform(UNI_MODEL_MAT,this.transform.matrix)
+    this.material.setUniform(UNI_PROJ_MAT,camera.projection)
+    this.material.setUniform(UNI_CAM_MAT,camera.transform.matrix)
     this.geometry.init(gl)
     this.material.init(gl)
-    console.log(this.geometry.attributes)
   }
   update() {
     this.transform.updateMatrix()
   }
   /**
    * @param {WebGL2RenderingContext} gl
+   * @param {Matrix} view
    */
-  renderGL(gl, camera, projection) {
+  renderGL(gl,  view, projection) {
     let material = this.material
     let geometry = this.geometry
     let attributes = geometry.attributes
@@ -33,17 +37,11 @@ export class Mesh {
     //preping uniforms and activating program
     material.activate(gl)
     gl.bindVertexArray(this.geometry.VAO)
-
-    gl.uniformMatrix4fv(
-      material.uniformLoc[UNI_CAM_MAT], false, camera.raw
-    )
-    gl.uniformMatrix4fv(
-      material.uniformLoc[UNI_PROJ_MAT], false, projection.raw
-    )
-    gl.uniformMatrix4fv(
-      material.uniformLoc[UNI_MODEL_MAT], false, this.transform.matrix.raw
-    )
-
+    
+    material.updateUniform(UNI_MODEL_MAT,this.transform.matrix)
+    material.updateUniform(UNI_PROJ_MAT,projection)
+    material.updateUniform(UNI_CAM_MAT,view)
+    
     //drawing
     if (attributes.indices) {
       gl.drawElements(drawMode,
@@ -52,11 +50,10 @@ export class Mesh {
       );
     } else {
       gl.drawArrays(drawMode, 0,
-        attributes['position'].count
+        attributes[ATTR_POSITION_NAME].count
       )
     }
     gl.bindVertexArray(null)
     material.deactivate(gl)
-    
   }
 }

@@ -46,7 +46,7 @@ function createVAO(gl, attributes) {
     let dict = attributes[name]
     let buffer = gl.createBuffer()
     let array =new Float32Array(dict.value)
-    console.log(array);
+    
     dict.buffer = buffer
     dict.location = location
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
