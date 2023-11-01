@@ -30,9 +30,7 @@ export class Mesh {
     let material = this.material
     let geometry = this.geometry
     let attributes = geometry.attributes
-
-    //TODO - make this a prop of material.
-    let drawMode = gl.LINE_LOOP
+    let drawMode = material.drawMode
 
     //preping uniforms and activating program
     material.activate(gl)

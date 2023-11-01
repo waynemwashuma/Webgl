@@ -8,7 +8,23 @@ import {
   UniformTypes
 } from "../constants.js"
 
+export const DrawModes = (
+  function (){
+    let canvas = document.createElement('canvas')
+    let gl = canvas.getContext("webgl2")
+    
+    return {
+      POINTS:gl.POINTS,
+      TRIANGLES:gl.TRIANGLES,
+      TRIANGLE_FAN:gl.TRIANGLE_FAN,
+      TRIANGLE_STRIP:gl.TRIANGLE_STRIP,
+      LINES:gl.LINES,
+      LINE_LOOP:gl.LINE_LOOP,
+      LINE_STRIP:gl.LINE_STRIP
+    }
+  })()
 export class Shader {
+  drawMode = DrawModes.TRIANGLES
   /**
    * @param {string} vshaderSrc
    * @param {string} fshaderSrc

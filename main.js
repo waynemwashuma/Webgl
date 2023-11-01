@@ -50,11 +50,10 @@ void main(){
   gl_FragColor = vec4(1.0,1.0,0.0,1.0);
 }
 `
-let m = new Mesh(new BoxGeometry(), new Shader(vshader, fshader, {
-  pointSize: 50.01
-}))
+let origin = new Mesh(new BoxGeometry(0.2), new Shader(vshader, fshader))
+let mesh = new Mesh(new BoxGeometry(), new Shader(vshader, fshader))
 
-renderer.add(m)
+renderer.add(mesh)
 renderer.setViewport(300, 300)
 //renderer.setViewport(innerWidth, innerHeight)
 
@@ -62,13 +61,15 @@ camera.makePerspective(120)
 //camera.updateProjection()
 camera.transform.position.z = 3
 
+mesh.transform.position.x = 3
+
 render()
 
 
 
 
 function render(dt) {
-  m.transform.rotation.y += Math.PI / 100
+  mesh.transform.rotation.y += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   renderer.update()
   requestAnimationFrame(render)
