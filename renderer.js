@@ -6,6 +6,7 @@ export class Renderer {
     /**
      * @type {WebGL2RenderingContext}
      */
+    this.dpr = devicePixelRatio
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
     this.camera = new Camera()
@@ -36,8 +37,11 @@ export class Renderer {
     let canvas = this.gl.canvas
     canvas.style.width = w + "px"
     canvas.style.height = h + "px"
-    canvas.width = w
-    canvas.height = h
-    this.gl.viewport(0, 0, w, h)
+    canvas.width = w * this.dpr
+    canvas.height = h * this.dpr
+    this.gl.viewport(0, 0,
+      w * this.dpr,
+      h * this.dpr
+    )
   }
 }
