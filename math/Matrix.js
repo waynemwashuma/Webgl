@@ -81,11 +81,12 @@ export class Matrix {
   }
   compose(position, rotation, scale) {
     mat4.identity(this.raw)
-    this.rotateX(rotation.x)
+    this
+      .translate(position)
+      .rotateX(rotation.x)
       .rotateY(rotation.y)
       .rotateZ(rotation.z)
       .scale(scale)
-      .translate(position)
     return this
   }
   identity() {
