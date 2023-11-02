@@ -27,32 +27,38 @@ let vshader =
   `precision mediump float;
 
 attribute vec3 position;
+attribute vec2 uv;
 attribute vec3 normal;
+
 uniform mat4 uCamera;
 uniform mat4 uProjection;
 uniform mat4 uModel;
 uniform float pointSize;
 varying vec3 color;
+varying vec2 textCood;
 
 void main(){
   gl_PointSize = pointSize;
   gl_Position = uProjection *uCamera * uModel * vec4(position,1.0);
-  //gl_Position = uModel * vec4(position,1.0);
-  color = normal;
+  //color = normal;
+  color = vec3(uv,0.0);
+  textCood = uv;
 }
 `
 let fshader =
   `precision mediump float;
 varying vec3 color;
+varying vec2 textCood;
 
 
 void main(){
-  gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+  gl_FragColor = vec4((color),1.0);
 }
 `
-let origin = new Mesh(new BoxGeometry(0.2), new Shader(vshader, fshader))
-let mesh = new Mesh(new BoxGeometry(), new Shader(vshader, fshader))
+let origin = new Mesh(new BoxGeometry(0.2,0.2), new Shader(vshader, fshader))
+let mesh = new Mesh(new QuadGeometry(1,1), new Shader(vshader, fshader))
 
+//renderer.add(origin)
 renderer.add(mesh)
 renderer.setViewport(300, 300)
 renderer.setViewport(innerWidth, innerHeight)
@@ -69,7 +75,7 @@ render()
 
 
 function render(dt) {
-  mesh.transform.rotation.y += Math.PI / 100
+  //mesh.transform.rotation.y += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   renderer.update()
   requestAnimationFrame(render)

@@ -16,8 +16,9 @@ export class Mesh {
     this.material.setUniform(UNI_MODEL_MAT,this.transform.matrix)
     this.material.setUniform(UNI_PROJ_MAT,camera.projection)
     this.material.setUniform(UNI_CAM_MAT,camera.transform.matrix)
-    this.geometry.init(gl)
     this.material.init(gl)
+    this.geometry.init(gl,this.material.program)
+    
   }
   update() {
     this.transform.updateMatrix()
@@ -31,11 +32,10 @@ export class Mesh {
     let geometry = this.geometry
     let attributes = geometry.attributes
     let drawMode = material.drawMode
-
+    
     //preping uniforms and activating program
     material.activate(gl)
     gl.bindVertexArray(this.geometry.VAO)
-    
     material.updateUniform(UNI_MODEL_MAT,this.transform.matrix)
     material.updateUniform(UNI_PROJ_MAT,projection)
     material.updateUniform(UNI_CAM_MAT,view)

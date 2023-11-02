@@ -16,14 +16,14 @@ export class Geometry {
   /**
    * @param {WebGL2RenderingContext} gl
    */
-  init(gl) {
+  init(gl, program) {
     /*this._VAO = createVAO(gl,
       this._attributes["indices"],
       this._attributes["position"],
       this._attributes["normal"],
       this._attributes["uv"]
     )/**/
-    this._VAO = createVAO(gl,this.attributes)
+    this._VAO = createVAO(gl, this.attributes, program)
   }
   setAttribute(name, attribute) {
     this._attributes[name] = attribute
@@ -37,7 +37,7 @@ export class Geometry {
   }
 }
 
-function createVAO(gl, attributes) {
+function createVAO(gl, attributes, program) {
   let vao = gl.createVertexArray()
   gl.bindVertexArray(vao)
   let location = 0
@@ -45,15 +45,15 @@ function createVAO(gl, attributes) {
     if (name == "indices") continue
     let dict = attributes[name]
     let buffer = gl.createBuffer()
-    let array =new Float32Array(dict.value)
-    
-    dict.buffer = buffer
-    dict.location = location
+    let array = new Float32Array(dict.value)
+
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
     gl.enableVertexAttribArray(location)
     gl.vertexAttribPointer(location, dict.size, gl.FLOAT, false, 0, 0)
-    location++
+
+    dict.buffer = buffer
+    dict.location = location++
   }
   if (attributes["indices"] !== void 0) {
     let dict = attributes["indices"]
@@ -66,6 +66,6 @@ function createVAO(gl, attributes) {
   }
   gl.bindVertexArray(null)
   gl.bindBuffer(gl.ARRAY_BUFFER, null)
-  //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
   return vao
-}/**/
+} /**/
