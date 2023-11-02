@@ -55,13 +55,13 @@ let mesh = new Mesh(new BoxGeometry(), new Shader(vshader, fshader))
 
 renderer.add(mesh)
 renderer.setViewport(300, 300)
-//renderer.setViewport(innerWidth, innerHeight)
+renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
 //camera.updateProjection()
 camera.transform.position.z = 3
 
-mesh.transform.position.x = 3
+mesh.transform.position.x = 0
 
 render()
 
