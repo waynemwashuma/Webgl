@@ -127,6 +127,7 @@ function typeOfUniform(uniform) {
  */
 function updateUniform(gl, uniform, texIndex) {
   let val = uniform.value
+  let arr = new Float32Array(16)
   switch (uniform.type) {
     case UniformTypes.BOOL:
       gl.uniform1f(uniform.location, uniform.value)
@@ -138,26 +139,31 @@ function updateUniform(gl, uniform, texIndex) {
       gl.uniform1f(uniform.location, uniform.value)
       break
     case UniformTypes.VEC2:
-      gl.uniform2f(uniform.location, val.x, val.y)
+      uniform.value.toArray(arr)
+      gl.uniform2fv(uniform.location, arr, 0, 2)
       break
     case UniformTypes.VEC3:
-      gl.uniform3f(uniform.location, val.x, val.y, val.z)
+
+      uniform.value.toArray(arr)
+      gl.uniform3fv(uniform.location, arr, 0, 3)
       break
     case UniformTypes.VEC4:
-      gl.uniform4f(uniform.location, val.x, val.y, val.z, val.w)
+      uniform.value.toArray(arr)
+      gl.uniform4fv(uniform.location, arr, 0, 4)
       break
     case UniformTypes.MAT2:
-      gl.uniformMatrix2fv(uniform.location, false, uniform.value)
+      uniform.value.toArray(arr)
+      gl.uniformMatrix2fv(uniform.location, false, 0,4)
       break
     case UniformTypes.MAT3:
-      gl.uniformMatrix3fv(uniform.location, false, uniform.value)
+      uniform.value.toArray(arr)
+      gl.uniformMatrix3fv(uniform.location, arr, false, arr,0,9)
       break
     case UniformTypes.MAT4:
-      //TODO - Make matrixmore flexible
-      gl.uniformMatrix4fv(uniform.location, false, uniform.value.raw)
+      uniform.value.toArray(arr)
+      gl.uniformMatrix4fv(uniform.location, false, arr,0,16)
       break
     case UniformTypes.TEXTURE:
-
       uniform.value.use(gl, texIndex)
       gl.uniform1i(uniform.location, texIndex)
       break
