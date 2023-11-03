@@ -4,7 +4,7 @@ let arr = [],
   arr2 = [],
   arr3 = []
 let toRad = Math.PI / 180
-export class Matrix {
+export class Mat4 {
   constructor() {
     this.raw = mat4.identity(mat4.create())
   }

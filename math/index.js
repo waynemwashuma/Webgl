@@ -1,4 +1,4 @@
-export * from "./Matrix.js"
+export * from "./Mat4.js"
 export * from "./transform.js"
 export * from "./vec3.js"
 export * from "./color.js"
