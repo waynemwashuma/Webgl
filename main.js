@@ -15,7 +15,7 @@ import {
   QuadGeometry
 } from "./geometry/index.js"
 import { Color } from "/math/index.js"
-import { Vector } from "/math/Vector.js"
+import { Vec3 } from "/math/index.js"
 import { Renderer } from "./renderer.js"
 import { Texture } from "./textures/index.js"
 
