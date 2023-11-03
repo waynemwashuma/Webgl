@@ -105,6 +105,28 @@ export class Matrix {
     )
     return this
   }
+  toArray(array, offset = 0) {
+    
+    //TOdo - when you remove the raw from glmatrix.
+    array[offset] = this.raw[0]
+    array[offset + 1] = this.raw[1]
+    array[offset + 2] = this.raw[2]
+    array[offset + 3] = this.raw[3]
+    array[offset + 4] = this.raw[4]
+    array[offset + 5] = this.raw[5]
+    array[offset + 6] = this.raw[6]
+    array[offset + 7] = this.raw[7]
+    array[offset + 8] = this.raw[8]
+    array[offset + 9] = this.raw[9]
+    array[offset + 10] = this.raw[10]
+    array[offset + 11] = this.raw[11]
+    array[offset + 12] = this.raw[12]
+    array[offset + 13] = this.raw[13]
+    array[offset + 14] = this.raw[14]
+    array[offset + 15] = this.raw[15]
+
+    return array
+  }
   makePerspective(fovy, aspect, near, far) {
     mat4.perspective(fovy, aspect, near, far, this.raw)
     return this
