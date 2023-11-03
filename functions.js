@@ -58,18 +58,18 @@ export function createshader(gl, src, type) {
 /**
  * @param {WebGLRenderingContext} gl
  */
-export function createTexture(gl, img, flipY) {
+export function createTexture(gl,img,flipY ) {
   let tex = gl.createTexture()
-
-  if (flipY) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-  gl.bindTexture(gl.TEXTURE_2D, tex)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
-  gl.generateMipmap(gl.TEXTURE_2D)
   
-  if (flipY) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
-  gl.bindTexture(gl.TEXTURE_2D, null)
+  if(flipY)gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true)
+  gl.bindTexture(gl.TEXTURE_2D,tex)
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img)
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR)
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_NEAREST)
+  gl.generateMipmap(gl.TEXTURE_2D)
+  gl.bindTexture(gl.TEXTURE_2D,null)
+  
+    if(flipY)gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false)
   return tex
 }
 /**
