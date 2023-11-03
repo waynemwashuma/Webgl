@@ -16,8 +16,8 @@ import {
 } from "./geometry/index.js"
 import { Matrix } from "/math/Matrix.js"
 import { Vector } from "/math/Vector.js"
-import { Camera } from "/camera.js"
 import { Renderer } from "./renderer.js"
+import { Texture } from "./textures/index.js"
 
 let canvas = document.getElementById("can")
 let renderer = new Renderer(canvas)
@@ -33,30 +33,34 @@ attribute vec3 normal;
 uniform mat4 uCamera;
 uniform mat4 uProjection;
 uniform mat4 uModel;
-uniform float pointSize;
-varying vec3 color;
-varying vec2 textCood;
+
+varying vec2 v_uv;
 
 void main(){
-  gl_PointSize = pointSize;
   gl_Position = uProjection *uCamera * uModel * vec4(position,1.0);
-  //color = normal;
-  color = vec3(uv,0.0);
-  textCood = uv;
+  v_uv = uv;
 }
 `
 let fshader =
   `precision mediump float;
-varying vec3 color;
-varying vec2 textCood;
 
+
+uniform sampler2D texture;
+
+varying vec2 v_uv;
 
 void main(){
-  gl_FragColor = vec4((color),1.0);
+  //gl_FragColor = vec4(v_uv,0.0,1.0);
+  gl_FragColor = texture2D(texture,v_uv);
 }
 `
-let origin = new Mesh(new BoxGeometry(0.2,0.2), new Shader(vshader, fshader))
-let mesh = new Mesh(new QuadGeometry(1,1), new Shader(vshader, fshader))
+
+let tex = new Texture("./UV_Grid_Lrg.jpg")
+
+let origin = new Mesh(new BoxGeometry(0.2, 0.2), new Shader(vshader, fshader))
+let mesh = new Mesh(new QuadGeometry(2, 2), new Shader(vshader, fshader, {
+  "texture": tex
+}))
 
 //renderer.add(origin)
 renderer.add(mesh)
@@ -69,14 +73,10 @@ camera.transform.position.z = 3
 
 mesh.transform.position.x = 0
 
-render()
-
-
-
-
 function render(dt) {
-  //mesh.transform.rotation.y += Math.PI / 100
+  //mesh.transform.rotation.z += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   renderer.update()
   requestAnimationFrame(render)
 }
+render()

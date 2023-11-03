@@ -17,6 +17,6 @@ export const UniformTypes = {
   VEC4 : 5,
   MAT2 : 6,
   MAT3 : 7,
-  MAT4 : 8
+  MAT4 : 8,
+  TEXTURE:9
 }
-//console.log(UniformTypes);

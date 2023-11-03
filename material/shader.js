@@ -9,18 +9,18 @@ import {
 } from "../constants.js"
 
 export const DrawModes = (
-  function (){
+  function() {
     let canvas = document.createElement('canvas')
     let gl = canvas.getContext("webgl2")
-    
+
     return {
-      POINTS:gl.POINTS,
-      TRIANGLES:gl.TRIANGLES,
-      TRIANGLE_FAN:gl.TRIANGLE_FAN,
-      TRIANGLE_STRIP:gl.TRIANGLE_STRIP,
-      LINES:gl.LINES,
-      LINE_LOOP:gl.LINE_LOOP,
-      LINE_STRIP:gl.LINE_STRIP
+      POINTS: gl.POINTS,
+      TRIANGLES: gl.TRIANGLES,
+      TRIANGLE_FAN: gl.TRIANGLE_FAN,
+      TRIANGLE_STRIP: gl.TRIANGLE_STRIP,
+      LINES: gl.LINES,
+      LINE_LOOP: gl.LINE_LOOP,
+      LINE_STRIP: gl.LINE_STRIP
     }
   })()
 export class Shader {
@@ -45,22 +45,29 @@ export class Shader {
     if (this.program) return
     this.program = createProgramFromSrc(gl, this.vSrc, this.fSrc)
 
-    for (var name in this.uniforms) {
+    for (let name in this.uniforms) {
       let uniform = this.uniforms[name]
       uniform.type = typeOfUniform(
         this.uniforms[name]
       )
+      if (uniform.type === UniformTypes.TEXTURE)
+        uniform.value.init(gl)
+      //TODO - warn if location is null.
       uniform.location = gl.getUniformLocation(this.program, name)
+
     }
   }
   /**
    * @param {WebGL2RenderingContext} gl
    */
   activate(gl) {
+    let texIndex = 1
     gl.useProgram(this.program)
     for (var name in this.uniforms) {
       let u = this.uniforms[name]
-      updateUniform(gl, u)
+      updateUniform(gl, u, texIndex)
+      if (u.type === UniformTypes.getContext)
+        texIndex++
     }
   }
   /**
@@ -108,6 +115,8 @@ function typeOfUniform(uniform) {
     if (name === "mat3")
       return UniformTypes.MAT3
     if (name === "mat4" || name == "matrix") return UniformTypes.MAT4
+    if (name === "texture")
+      return UniformTypes.TEXTURE
   }
 
   throw "Unsupported type of a uniform value."
@@ -116,7 +125,7 @@ function typeOfUniform(uniform) {
 /**
  * @param {WebGL2RenderingContext} gl
  */
-function updateUniform(gl, uniform) {
+function updateUniform(gl, uniform, texIndex) {
   let val = uniform.value
   switch (uniform.type) {
     case UniformTypes.BOOL:
@@ -129,7 +138,7 @@ function updateUniform(gl, uniform) {
       gl.uniform1f(uniform.location, uniform.value)
       break
     case UniformTypes.VEC2:
-      gl.uniform2f(uniform.location, val.x,val.y)
+      gl.uniform2f(uniform.location, val.x, val.y)
       break
     case UniformTypes.VEC3:
       gl.uniform3f(uniform.location, val.x, val.y, val.z)
@@ -146,6 +155,11 @@ function updateUniform(gl, uniform) {
     case UniformTypes.MAT4:
       //TODO - Make matrixmore flexible
       gl.uniformMatrix4fv(uniform.location, false, uniform.value.raw)
+      break
+    case UniformTypes.TEXTURE:
+
+      uniform.value.use(gl, texIndex)
+      gl.uniform1i(uniform.location, texIndex)
       break
   }
 }
