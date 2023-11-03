@@ -14,7 +14,7 @@ import {
   Geometry,
   QuadGeometry
 } from "./geometry/index.js"
-import { Matrix } from "/math/index.js"
+import { Color } from "/math/index.js"
 import { Vector } from "/math/Vector.js"
 import { Renderer } from "./renderer.js"
 import { Texture } from "./textures/index.js"
@@ -67,6 +67,7 @@ let origin = new Mesh(
 let mesh = new Mesh(
   new QuadGeometry(2, 2),
   new BasicMaterial({
+    color:new Color(),
     texture: tex
   })
 )
@@ -84,6 +85,7 @@ mesh.transform.position.x = 0
 
 function render(dt) {
   mesh.transform.rotation.y += Math.PI / 100
+  mesh.transform.rotation.x += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   renderer.update()
   requestAnimationFrame(render)

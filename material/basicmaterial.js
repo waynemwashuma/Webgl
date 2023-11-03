@@ -28,26 +28,26 @@ uniform vec4 color;
 varying vec2 v_uv;
 
 void main(){
-  gl_FragColor = color;
+   gl_FragColor = texture2D(texture,v_uv) + color;
 }
 `
 
-export class BasicMaterial extends Shader{
+export class BasicMaterial extends Shader {
   color = new Color()
   texture = null
-  constructor(options){
+  constructor(options) {
     super()
     this.vSrc = vshader
     this.fSrc = fshader
 
     let {
-      color = new Color(0,0,255),
-      texture = null,
+      color = new Color(255, 255, 255),
+        texture = null,
     } = options
     this.color.copy(color)
     this.texture = texture
-    
-    if(texture)this.setUniform("texture",texture)
-    this.setUniform("color",this.color)
+
+    if (texture) this.setUniform("texture", texture)
+    this.setUniform("color", this.color)
   }
 }
