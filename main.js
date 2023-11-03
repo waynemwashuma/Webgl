@@ -14,7 +14,7 @@ import {
   Geometry,
   QuadGeometry
 } from "./geometry/index.js"
-import { Matrix } from "/math/Matrix.js"
+import { Matrix } from "/math/index.js"
 import { Vector } from "/math/Vector.js"
 import { Renderer } from "./renderer.js"
 import { Texture } from "./textures/index.js"
