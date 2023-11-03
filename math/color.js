@@ -22,7 +22,7 @@ export class Color {
   constructor(r = 0, g = 0, b = 0, alpha = 1.0) {
     this.setColor(r, g, b, alpha);
   }
-  
+
   /**
    * Set this color to the specified value.
    * @param {number} r - red component [0 .. 255]
@@ -38,7 +38,7 @@ export class Color {
     this.a = alpha;
     return this;
   }
-  
+
   /**
    * Create a new copy of this color object.
    * @returns {Color} Reference to the newly cloned object
@@ -136,8 +136,13 @@ export class Color {
   }
 
 
-  toArray() {
-    return this.glArray;
+  toArray(array, offset = 0) {
+    array[offset] = this.r
+    array[offset + 1] = this.g
+    array[offset + 2] = this.b
+    array[offset + 3] = this.a
+
+    return array
   }
 }
 
