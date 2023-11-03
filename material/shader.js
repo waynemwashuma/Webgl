@@ -61,12 +61,12 @@ export class Shader {
    * @param {WebGL2RenderingContext} gl
    */
   activate(gl) {
-    let texIndex = 1
+    let texIndex = 0
     gl.useProgram(this.program)
     for (var name in this.uniforms) {
       let u = this.uniforms[name]
       updateUniform(gl, u, texIndex)
-      if (u.type === UniformTypes.getContext)
+      if (u.type === UniformTypes.TEXTURE)
         texIndex++
     }
   }
