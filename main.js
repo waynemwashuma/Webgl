@@ -78,7 +78,7 @@ camera.transform.position.z = 3
 mesh.transform.position.x = 0
 
 function render(dt) {
-  //mesh.transform.rotation.z += Math.PI / 100
+  mesh.transform.rotation.y += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   renderer.update()
   requestAnimationFrame(render)
