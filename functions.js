@@ -76,7 +76,6 @@ export function createTexture(gl,img,flipY ) {
  * @param {WebGLRenderingContext} gl
  */
 export function createProgram(gl, vshader, fshader) {
-  console.log(gl.MAX_TEXTURE_IMAGE_UNITS);
   let program = gl.createProgram()
   gl.attachShader(program, vshader)
   gl.attachShader(program, fshader)
