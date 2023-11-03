@@ -108,13 +108,13 @@ function typeOfUniform(uniform) {
       return UniformTypes.VEC2
     if (name === "vec3")
       return UniformTypes.VEC3
-    if (name === "vec4")
+    if (name === "vec4" || name === "color")
       return UniformTypes.VEC4
     if (name === "mat2")
       return UniformTypes.MAT2
     if (name === "mat3")
       return UniformTypes.MAT3
-    if (name === "mat4" || name == "matrix") return UniformTypes.MAT4
+    if (name === "mat4" || name === "matrix") return UniformTypes.MAT4
     if (name === "texture")
       return UniformTypes.TEXTURE
   }

@@ -8,7 +8,7 @@ import {
 } from "./constants.js"
 
 import { Mesh } from "./meshes/mesh.js"
-import { Shader } from "./material/index.js"
+import { Shader, BasicMaterial } from "./material/index.js"
 import {
   BoxGeometry,
   Geometry,
@@ -60,11 +60,16 @@ void main(){
 let tex = new Texture("./UV_Grid_Lrg.jpg")
 let tex2 = new Texture("./texture.png")
 
-let origin = new Mesh(new BoxGeometry(0.2, 0.2), new Shader(vshader, fshader))
-let mesh = new Mesh(new QuadGeometry(2, 2), new Shader(vshader, fshader, {
-  "texture": tex,
-  "texture2": tex2
-}))
+let origin = new Mesh(
+  new BoxGeometry(0.2, 0.2),
+  new Shader(vshader, fshader)
+)
+let mesh = new Mesh(
+  new QuadGeometry(2, 2),
+  new BasicMaterial({
+    texture: tex
+  })
+)
 
 //renderer.add(origin)
 renderer.add(mesh)

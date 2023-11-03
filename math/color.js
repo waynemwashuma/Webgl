@@ -11,7 +11,7 @@ function random(min, max) {
 /**
  * A color manipulation class.
  */
-class Color {
+export class Color {
 
   /**
    * @param {number} [r=0] - red component [0 .. 255]

@@ -23,25 +23,31 @@ let fshader =
   `precision mediump float;
 
 uniform sampler2D texture;
-uniform vec3 color;
+uniform vec4 color;
 
 varying vec2 v_uv;
 
 void main(){
-  gl_FragColor = vec4(color,1.0);
+  gl_FragColor = color;
 }
 `
 
 export class BasicMaterial extends Shader{
-  color = []
+  color = new Color()
   texture = null
   constructor(options){
+    super()
+    this.vSrc = vshader
+    this.fSrc = fshader
+
     let {
-      color = [],
+      color = new Color(0,0,255),
       texture = null,
     } = options
-    super()
-    this.setUniform("texture",texture)
-    this.setUniform("color",color)
+    this.color.copy(color)
+    this.texture = texture
+    
+    if(texture)this.setUniform("texture",texture)
+    this.setUniform("color",this.color)
   }
 }
