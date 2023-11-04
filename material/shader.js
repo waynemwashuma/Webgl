@@ -70,6 +70,17 @@ export class Shader {
         texIndex++
     }
   }
+    /**
+   * @param {WebGL2RenderingContext} gl
+   */
+  prepareUBO(gl,ubo){
+    let index = gl.getUniformBlockIndex(this.program,ubo.name)
+    
+    console.log("SIZE",gl.getActiveUniformBlockParameter(this.program,index,gl.UNIFORM_BLOCK_DATA_SIZE));
+    console.log("no. of uniforms",gl.getActiveUniformBlockParameter(this.program,index,gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS));
+    console.log("Indices",gl.getActiveUniformBlockParameter(this.program,index,gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES));
+    gl.uniformBlockBinding(this.program,index,ubo.point)
+  }
   /**
    * @param {WebGL2RenderingContext} gl
    */

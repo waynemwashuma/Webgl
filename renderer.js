@@ -1,6 +1,15 @@
 import { Camera } from "./camera.js"
+import { createUBO } from "./functions.js"
 
 export class Renderer {
+  _ubocounter = 0
+  _UBOs = {}
+  meshes = []
+  camera = new Camera()
+  domElement = null
+  gl = null
+  dpr = 0
+  
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
     /**
@@ -9,11 +18,42 @@ export class Renderer {
     this.dpr = devicePixelRatio
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    this.camera = new Camera()
-    this.meshes = []
+    
+    this.setGlobalUBO("camera", {
+      "view": this.camera.view,
+      //"projection": this.camera.projection
+    })
   }
+  setGlobalUBO(name, data) {
+    this._UBOs[name] = createUBO(
+      this.gl, name, this.getUBOpoint(), data
+    )
+  }
+  getUBOpoint() {
+    return this._ubocounter++;
+  }
+  updateUBO(uboName, name, value) {
+    let data = new Float32Array(16)
+    if (typeof value !== "object")
+      data = value
+    else
+      value.toArray(data)
+
+    if (uboName in this._UBOs) {
+      let ubo = this._UBOs[uboName]
+      ubo.update(
+        this.gl, name, data
+      )
+    }
+  }
+
   add(mesh) {
     mesh.init(this.gl, this.camera)
+    for (var name in this._UBOs) {
+      let ubo = this._UBOs[name]
+
+      mesh.material.prepareUBO(this.gl, ubo)
+    }
     this.meshes.push(mesh)
   }
   remove(mesh) {
@@ -27,6 +67,12 @@ export class Renderer {
     this.clear()
     if (this.camera) {
       this.camera.updateMatrix()
+      this.updateUBO(
+        "camera", "view", this.camera.view
+      )
+      /*this.updateUBO(
+        "camera", "projection", this.camera.projection
+      )*/
     }
     for (var i = 0; i < this.meshes.length; i++) {
       this.meshes[i].update()

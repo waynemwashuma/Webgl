@@ -4,7 +4,8 @@ import {
   ATTR_UV_LOC,
   ATTR_POSITION_NAME,
   ATTR_NORMAL_NAME,
-  ATTR_UV_NAME
+  ATTR_UV_NAME,
+  UniformTypes
 } from "./constants.js"
 
 import { Mesh } from "./meshes/mesh.js"
@@ -14,46 +15,56 @@ import {
   Geometry,
   QuadGeometry
 } from "./geometry/index.js"
-import { Color } from "/math/index.js"
-import { Vec3 } from "/math/index.js"
+import { Vec3,Color } from "/math/index.js"
 import { Renderer } from "./renderer.js"
 import { Texture } from "./textures/index.js"
+import { createUBO } from "./functions.js"
 
 let canvas = document.getElementById("can")
 let renderer = new Renderer(canvas)
 let camera = renderer.camera
 
 let vshader =
-  `precision mediump float;
-
-attribute vec3 position;
-attribute vec2 uv;
-attribute vec3 normal;
-
-uniform mat4 uCamera;
-uniform mat4 uProjection;
-uniform mat4 uModel;
-
-varying vec2 v_uv;
-
-void main(){
-  gl_Position = uProjection *uCamera * uModel * vec4(position,1.0);
-  v_uv = uv;
-}
+  `#version 300 es
+  precision mediump float;
+  
+  /*uniform camera {
+    mat4 view;
+    mat4 projection;
+  };*/
+  
+  uniform mat4 model;
+  uniform mat4 projection;
+  uniform mat4 view;
+  
+  
+  in vec3 position;
+  in vec2 uv;
+  in vec3 normal;
+  
+  out vec2 v_uv;
+  
+  void main(){
+    gl_Position = projection * view * model * vec4(position,1.0);
+    v_uv = uv;
+  }
 `
 let fshader =
-  `precision mediump float;
-
-uniform sampler2D texture;
+  `#version 300 es
+  precision mediump float;
+  uniform sampler2D texture;
 uniform sampler2D texture2;
 
-varying vec2 v_uv;
+in vec2 v_uv;
+out vec4 FragColor;
 
 void main(){
-  //gl_FragColor = vec4(v_uv,0.0,1.0);
-  //gl_FragColor = texture2D(texture,v_uv);
-  //gl_FragColor = texture2D(texture2,v_uv);
-  gl_FragColor = mix(texture2D(texture,v_uv),texture2D(texture2,v_uv),0.2);
+  //FragColor = vec4(1.0,0.0,0.0,1.0);
+  FragColor = vec4(v_uv,0.0,1.0);
+  //FragColor = texture2D(texture,v_uv);
+  //FragColor = texture2D(texture2,v_uv);
+  //FragColor = vec4(color,1.0);
+  //FragColor = mix(texture2D(texture,v_uv),texture2D(texture2,v_uv),0.2);
 }
 `
 
@@ -66,26 +77,24 @@ let origin = new Mesh(
 )
 let mesh = new Mesh(
   new QuadGeometry(2, 2),
-  new BasicMaterial({
-    color:new Color(),
-    texture: tex
-  })
+  new Shader(vshader, fshader)
 )
 
-//renderer.add(origin)
-renderer.add(mesh)
 renderer.setViewport(300, 300)
 renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
 //camera.updateProjection()
 camera.transform.position.z = 3
-
 mesh.transform.position.x = 0
+
+//renderer.add(origin)
+renderer.add(mesh)
 
 function render(dt) {
   mesh.transform.rotation.y += Math.PI / 100
-  mesh.transform.rotation.x += Math.PI / 100
+  mesh.transform.rotation.z += Math.PI / 100
+  //mesh.transform.rotation.x += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   renderer.update()
   requestAnimationFrame(render)

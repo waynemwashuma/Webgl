@@ -4,7 +4,8 @@ import {
   ATTR_UV_LOC,
   ATTR_POSITION_NAME,
   ATTR_NORMAL_NAME,
-  ATTR_UV_NAME
+  ATTR_UV_NAME,
+  UniformTypes
 } from "./constants.js"
 
 /**
@@ -58,18 +59,18 @@ export function createshader(gl, src, type) {
 /**
  * @param {WebGLRenderingContext} gl
  */
-export function createTexture(gl,img,flipY ) {
+export function createTexture(gl, img, flipY) {
   let tex = gl.createTexture()
-  
-  if(flipY)gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true)
-  gl.bindTexture(gl.TEXTURE_2D,tex)
-  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img)
-  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR)
-  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_NEAREST)
+
+  if (flipY) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+  gl.bindTexture(gl.TEXTURE_2D, tex)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
   gl.generateMipmap(gl.TEXTURE_2D)
-  gl.bindTexture(gl.TEXTURE_2D,null)
-  
-    if(flipY)gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false)
+  gl.bindTexture(gl.TEXTURE_2D, null)
+
+  if (flipY) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
   return tex
 }
 /**
@@ -198,3 +199,162 @@ export function getAttrLoc(gl, program, name) {
 export function getUniformLoc(gl, program, name) {
   return gl.getUniformLocation(program, name)
 }
+
+export function typeOfUniform(uniform) {
+  let name = uniform.constructor.name.toLowerCase()
+  let type = typeof uniform
+
+  if (type == "boolean")
+    return UniformTypes.BOOL
+  if (type == "number") {
+    if (Number.isInteger(uniform))
+      return UniformTypes.INT
+    return UniformTypes.FLOAT
+  }
+  if (type == "object") {
+    if (name === "vec2")
+      return UniformTypes.VEC2
+    if (name === "vec3")
+      return UniformTypes.VEC3
+    if (name === "vec4" || name === "color")
+      return UniformTypes.VEC4
+    if (name === "mat2")
+      return UniformTypes.MAT2
+    if (name === "mat3")
+      return UniformTypes.MAT3
+    if (name === "mat4" || name === "matrix") return UniformTypes.MAT4
+    if (name === "texture")
+      return UniformTypes.TEXTURE
+  }
+
+  throw "Unsupported type of a uniform value  \'" + name + "\'";
+}
+
+/**
+ * @param {WebGL2RenderingContext} gl
+ */
+export class UBO {
+  constructor(gl, name, point, bufSize, aryCalc) {
+    this.items = {}
+
+    for (var i = 0; i < aryCalc.length; i++) {
+      this.items[aryCalc[i].name] = { offset: aryCalc[i].offset, size: aryCalc[i].dataLen };
+    }
+
+    this.name = name;
+    this.point = point;
+    this.buffer = gl.createBuffer();
+
+    gl.bindBuffer(gl.UNIFORM_BUFFER, this.buffer)
+    gl.bufferData(gl.UNIFORM_BUFFER, bufSize, gl.DYNAMIC_DRAW)
+    gl.bindBuffer(gl.UNIFORM_BUFFER, null)
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, point, this.buffer)
+    
+  }
+  /**
+   * @param {string} name
+   * @param {Float32Array} data
+   */
+  update(gl, name, data) {
+    gl.bindBuffer(gl.UNIFORM_BUFFER, this.buffer);
+    gl.bufferSubData(gl.UNIFORM_BUFFER,
+    this.items[name].offset, data,
+    this.items[name].size , null
+    );
+    gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+    return this;
+  }
+
+  static getSize(type) { //[Alignment,Size]
+    switch (type) {
+      case UniformTypes.INT:
+      case UniformTypes.FLOAT:
+      case UniformTypes.BOOL:
+        return 4
+      case UniformTypes.MAT4:
+        return 64 //16*4
+      case UniformTypes.MAT3:
+        return 48 //16*3
+      case UniformTypes.VEC2:
+        return 8
+      case UniformTypes.VEC3:
+        return 16 //Special Case
+      case UniformTypes.VEC4:
+        return 16
+      default:
+        return 0
+    }
+  }
+
+  static calculate(ary) {
+    let chunk = 16,
+      i = 0,
+      tsize = 0,
+      offset = 0,
+      size,
+      data = []
+    for (let name in ary) {
+      data.push({
+        name:"",
+        offset: 0,
+        dataLen: 0,
+        chunkLen: 0,
+      })
+    }
+
+
+    for (let name in ary) {
+      let type = typeOfUniform(ary[name])
+      size = UBO.getSize(type)
+      tsize = chunk - size;
+
+      if (tsize < 0 && chunk < 16) {
+        offset += chunk;
+        if (i > 0) data[i - 1].chunkLen += chunk
+        chunk = 16
+      } else if (tsize < 0 && chunk == 16) {} else if (tsize == 0) {
+        if (type == UniformTypes.VEC3 && chunk == 16) chunk -= 12;
+        else chunk = 16;
+
+      } else chunk -= size
+      data[i].offset = offset
+      data[i].chunkLen = size
+      data[i].dataLen = size 
+      data[i].name = name
+      offset += size
+      i++
+    }
+    return [data, offset];
+  }
+
+  static debugVisualize(ubo) {
+    let str = "",
+      chunk = 0,
+      tchunk = 0,
+      itm = null
+    if(ubo !== void 0)console.log(ubo);
+    for (let i in ubo.items) {
+      itm = ubo.items[i]
+
+      chunk = itm.dataLen / 4;
+      for (let x = 0; x < chunk; x++) {
+        str += (x == 0 || x == chunk - 1) ? "||." + i + "." : "||...."; //Display the index
+        tchunk++;
+        if (tchunk % 4 == 0) str += "|\n";
+      }
+      i++
+    }
+
+    if (tchunk % 4 != 0) str += "|";
+
+    console.log(str);
+  }
+}
+export function createUBO(gl, name, point, uniforms) {
+  var [data, bufSize] = UBO.calculate(uniforms);
+  let ubo = new UBO(gl, name, point, bufSize, data);
+  UBO.debugVisualize(ubo);
+  
+  return ubo
+}
+UBO.Cache = [];
