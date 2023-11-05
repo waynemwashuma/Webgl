@@ -9,7 +9,7 @@ export class Renderer {
   domElement = null
   gl = null
   dpr = 0
-  
+
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
     /**
@@ -18,10 +18,10 @@ export class Renderer {
     this.dpr = devicePixelRatio
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    
+
     this.setGlobalUBO("camera", {
       "view": this.camera.view,
-      //"projection": this.camera.projection
+      "projection": this.camera.projection
     })
   }
   setGlobalUBO(name, data) {
@@ -70,9 +70,9 @@ export class Renderer {
       this.updateUBO(
         "camera", "view", this.camera.view
       )
-      /*this.updateUBO(
+      this.updateUBO(
         "camera", "projection", this.camera.projection
-      )*/
+      )
     }
     for (var i = 0; i < this.meshes.length; i++) {
       this.meshes[i].update()

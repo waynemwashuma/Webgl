@@ -28,14 +28,14 @@ let vshader =
   `#version 300 es
   precision mediump float;
   
-  /*uniform camera {
+  uniform camera {
     mat4 view;
     mat4 projection;
-  };*/
+  };
   
   uniform mat4 model;
-  uniform mat4 projection;
-  uniform mat4 view;
+  //uniform mat4 projection;
+  //uniform mat4 view;
   
   
   in vec3 position;

@@ -238,7 +238,7 @@ export class UBO {
     this.items = {}
 
     for (var i = 0; i < aryCalc.length; i++) {
-      this.items[aryCalc[i].name] = { offset: aryCalc[i].offset, size: aryCalc[i].dataLen };
+      this.items[aryCalc[i].name] = { offset: aryCalc[i].offset, size: aryCalc[i].dataLen/4 };
     }
 
     this.name = name;
@@ -258,8 +258,8 @@ export class UBO {
   update(gl, name, data) {
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.buffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER,
-    this.items[name].offset, data,
-    this.items[name].size , null
+    this.items[name].offset, data,0,
+    this.items[name].size
     );
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
     return this;

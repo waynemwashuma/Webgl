@@ -70,16 +70,13 @@ export class Shader {
         texIndex++
     }
   }
-    /**
+  /**
    * @param {WebGL2RenderingContext} gl
    */
-  prepareUBO(gl,ubo){
-    let index = gl.getUniformBlockIndex(this.program,ubo.name)
+  prepareUBO(gl, ubo) {
+    let index = gl.getUniformBlockIndex(this.program, ubo.name)
     
-    console.log("SIZE",gl.getActiveUniformBlockParameter(this.program,index,gl.UNIFORM_BLOCK_DATA_SIZE));
-    console.log("no. of uniforms",gl.getActiveUniformBlockParameter(this.program,index,gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS));
-    console.log("Indices",gl.getActiveUniformBlockParameter(this.program,index,gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES));
-    gl.uniformBlockBinding(this.program,index,ubo.point)
+    gl.uniformBlockBinding(this.program, index, ubo.point)
   }
   /**
    * @param {WebGL2RenderingContext} gl
@@ -164,15 +161,15 @@ function updateUniform(gl, uniform, texIndex) {
       break
     case UniformTypes.MAT2:
       uniform.value.toArray(arr)
-      gl.uniformMatrix2fv(uniform.location, false, 0,4)
+      gl.uniformMatrix2fv(uniform.location, false, 0, 4)
       break
     case UniformTypes.MAT3:
       uniform.value.toArray(arr)
-      gl.uniformMatrix3fv(uniform.location, arr, false, arr,0,9)
+      gl.uniformMatrix3fv(uniform.location, arr, false, arr, 0, 9)
       break
     case UniformTypes.MAT4:
       uniform.value.toArray(arr)
-      gl.uniformMatrix4fv(uniform.location, false, arr,0,16)
+      gl.uniformMatrix4fv(uniform.location, false, arr, 0, 16)
       break
     case UniformTypes.TEXTURE:
       uniform.value.use(gl, texIndex)
