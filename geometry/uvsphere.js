@@ -43,7 +43,7 @@ function createUVSphere(radius, numSegments, numRings) {
       const y = radius * sintheta * cosphi
       const z = radius * sinphi
       const nx = costheta * cosphi
-      const ny = y / radius;
+      const ny = sintheta * cosphi;
       const nz = sinphi;
       const u = 1.0 - (j / numSegments);
       const v = 1.0 - (i / numRings);
