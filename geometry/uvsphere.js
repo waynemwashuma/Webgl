@@ -7,15 +7,15 @@ export class UVShereGeometry extends Geometry {
     super()
 
     const { indices, vertices, normals, uvs } = createUVSphere(radius, numSegments, numRings);
-    
+
     this.setAttribute("indices",
       new Attribute(indices, 1)
     )
     this.setAttribute("position",
       new Attribute(vertices, 3)
     )
-    this.setAttribute("normal", 
-    new Attribute(normals, 3)
+    this.setAttribute("normal",
+      new Attribute(normals, 3)
     )
     this.setAttribute("uv",
       new Attribute(uvs, 2)
@@ -31,17 +31,23 @@ function createUVSphere(radius, numSegments, numRings) {
 
   for (let i = 0; i <= numRings; i++) {
     const phi = Math.PI * (-0.5 + (i / numRings));
+    const cosphi = Math.cos(phi)
+    const sinphi = Math.sin(phi)
+
     for (let j = 0; j <= numSegments; j++) {
       const theta = 2 * Math.PI * (j / numSegments);
-      const x = radius * Math.cos(theta) * Math.cos(phi);
-      const y = radius * Math.sin(theta) * Math.cos(phi);
-      const z = radius * Math.sin(phi);
-      const nx = x / radius;
+      const costheta = Math.cos(theta)
+      const sintheta = Math.sin(theta)
+
+      const x = radius * costheta * cosphi
+      const y = radius * sintheta * cosphi
+      const z = radius * sinphi
+      const nx = costheta * cosphi
       const ny = y / radius;
-      const nz = z / radius;
+      const nz = sinphi;
       const u = 1.0 - (j / numSegments);
       const v = 1.0 - (i / numRings);
-      
+
       vertices.push(x, y, z);
       normals.push(nx, ny, nz);
       uvs.push(u, v);
