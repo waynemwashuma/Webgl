@@ -10,7 +10,7 @@ export class BoxGeometry extends Geometry {
   // Front face
   -0.5 * w, -0.5 * h, 0.5 * d,
   0.5 * w, -0.5 * h, 0.5 * d,
-  0.5 * w, 0.5 * h, 0.5 * d, 
+  0.5 * w, 0.5 * h, 0.5 * d,
   -0.5 * w, 0.5 * h, 0.5 * d,
 
   // Back face
@@ -47,7 +47,7 @@ export class BoxGeometry extends Geometry {
     let normals = [
     // Front
     0.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 
+    0.0, 0.0, 1.0,
     0.0, 0.0, 1.0,
     0.0, 0.0, 1.0,
 
@@ -66,18 +66,18 @@ export class BoxGeometry extends Geometry {
     // Bottom
     0.0, -1.0, 0.0,
     0.0, -1.0, 0.0,
-    0.0, -1.0, 0.0, 
+    0.0, -1.0, 0.0,
     0.0, -1.0, 0.0,
 
     // Right
     1.0, 0.0, 0.0,
-    1.0, 0.0, 0.0, 
-    1.0, 0.0, 0.0, 
+    1.0, 0.0, 0.0,
+    1.0, 0.0, 0.0,
     1.0, 0.0, 0.0,
 
     // Left
     -1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 
+    -1.0, 0.0, 0.0,
     -1.0, 0.0, 0.0,
     -1.0, 0.0, 0.0,
   ];
@@ -114,28 +114,21 @@ export class BoxGeometry extends Geometry {
         0.0, 1.0,
       ];
 
-    let indices = [
-    0, 1, 2,
-    0, 2, 3, // front
-    4, 5, 6,
-    4, 6, 7, // back
-    8, 9, 10,
-    8, 10, 11, // top
-    12, 13, 14,
-    12, 14, 15, // bottom
-    16, 17, 18,
-    16, 18, 19, // right
-    20, 21, 22,
-    20, 22, 23, // left
-  ]
+    let indices = []
+    for (var i = 0; i < vertices.length / 3; i += 4) {
+      indices.push(
+        i, i + 2, i + 1,
+        i, i + 3, i + 2
+      )
+    }
     this.setAttribute("indices",
       new Attribute(indices, 1)
     )
     this.setAttribute("position",
       new Attribute(vertices, 3)
     )
-    this.setAttribute("normal", 
-    new Attribute(normals, 3)
+    this.setAttribute("normal",
+      new Attribute(normals, 3)
     )
     this.setAttribute("uv",
       new Attribute(uv, 2)
