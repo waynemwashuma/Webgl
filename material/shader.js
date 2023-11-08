@@ -8,23 +8,35 @@ import {
   UniformTypes
 } from "../constants.js"
 
-export const DrawModes = (
+export const {
+  DrawModes,
+  CullFace
+} = (
   function() {
     let canvas = document.createElement('canvas')
     let gl = canvas.getContext("webgl2")
 
     return {
-      POINTS: gl.POINTS,
-      TRIANGLES: gl.TRIANGLES,
-      TRIANGLE_FAN: gl.TRIANGLE_FAN,
-      TRIANGLE_STRIP: gl.TRIANGLE_STRIP,
-      LINES: gl.LINES,
-      LINE_LOOP: gl.LINE_LOOP,
-      LINE_STRIP: gl.LINE_STRIP
+      DrawModes: {
+        POINTS: gl.POINTS,
+        TRIANGLES: gl.TRIANGLES,
+        TRIANGLE_FAN: gl.TRIANGLE_FAN,
+        TRIANGLE_STRIP: gl.TRIANGLE_STRIP,
+        LINES: gl.LINES,
+        LINE_LOOP: gl.LINE_LOOP,
+        LINE_STRIP: gl.LINE_STRIP
+      },
+      CullFace: {
+        FRONT: gl.FRONT,
+        BACK: gl.BACK,
+        BOTH: gl.FRONT_AND_BACK,
+        NONE: gl.NONE
+      }
     }
   })()
 export class Shader {
   drawMode = DrawModes.TRIANGLES
+  cullFace = CullFace.FRONT
   /**
    * @param {string} vshaderSrc
    * @param {string} fshaderSrc
@@ -69,13 +81,14 @@ export class Shader {
       if (u.type === UniformTypes.TEXTURE)
         texIndex++
     }
+    gl.cullFace(this.cullFace);
   }
   /**
    * @param {WebGL2RenderingContext} gl
    */
   prepareUBO(gl, ubo) {
     let index = gl.getUniformBlockIndex(this.program, ubo.name)
-    
+
     gl.uniformBlockBinding(this.program, index, ubo.point)
   }
   /**
