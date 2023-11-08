@@ -111,9 +111,6 @@ let mesh = new Mesh(
   })
 )
 
-gl.enable(gl.CULL_FACE)
-gl.cullFace(gl.FRONT)
-
 renderer.setViewport(300, 300)
 renderer.setViewport(innerWidth, innerHeight)
 

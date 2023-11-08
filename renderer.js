@@ -7,18 +7,23 @@ export class Renderer {
   meshes = []
   camera = new Camera()
   domElement = null
+
   gl = null
   dpr = 0
-
+  culling = true
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
+    this.dpr = devicePixelRatio
     /**
      * @type {WebGL2RenderingContext}
      */
-    this.dpr = devicePixelRatio
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
 
+    if (this.culling) {
+      this.gl.enable(this.gl.CULL_FACE)
+      this.gl.cullFace(this.gl.FRONT)
+    }
     this.setGlobalUBO("camera", {
       "view": this.camera.view,
       "projection": this.camera.projection
@@ -54,6 +59,7 @@ export class Renderer {
 
       mesh.material.prepareUBO(this.gl, ubo)
     }
+
     this.meshes.push(mesh)
   }
   remove(mesh) {
