@@ -88,15 +88,7 @@ out vec4 FragColor;
 
 void main(){
 vec4 color = FragColor = vec4(1.0,1.0,0.0,1.0);
-  FragColor = color * ambient + 
-    (1.0 - ambient) * color * brightness;
-  //FragColor = vec4(v_uv,0.0,1.0);
-  //FragColor = texture2D(texture,v_uv);
-  //FragColor = texture2D(texture2,v_uv);
-  //FragColor = vec4(color,1.0);
-  //FragColor = mix(texture2D(texture,v_uv),texture2D(texture2,v_uv),0.2);
-  //FragColor = vec4(v_uv,0.0,1.0) * brightness;
-  FragColor.a = 1.0;
+  FragColor = vec4(1.0,1.0,0.0,1.0);
 }
 `
 
@@ -112,16 +104,16 @@ let origin = new Mesh(
 )
 let mesh = new Mesh(
   new UVShereGeometry(0.5),
-  new BasicMaterial({
-    color: new Color(1, 1, 1),
-    texture: tex,
-  })
+  new Shader(vshader,fshader)
+  
 )
 let mesh2 = new Mesh(
-  new UVShereGeometry(0.5),
-  new BasicMaterial({
+  new QuadGeometry(0.5),
+  new LambertMaterial({
     color: new Color(1, 1, 1),
     texture: tex,
+    tint:1.0,
+    lightDir : new Vector3(0,0,-1)
   })
 )
 
@@ -140,7 +132,7 @@ mesh.parent = origin
 //mesh2.parent = mesh
 
 let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI/1000, Math.PI/1000, 0)
+let euler = new Vector3(Math.PI/100, Math.PI/100, 0)
 quat1.setFromEuler(euler)
 console.log(quat1);
 
@@ -148,9 +140,10 @@ console.log(setEulerFromQuaternion(quat1))
 let angle = 0
 
 function render(dt) {
-  origin.transform.position.x = Math.sin(angle)
+  //origin.transform.position.x = Math.sin(angle)
+  //origin.transform.position.y = Math.cos(angle)
 
-  origin.transform.orientation.multiply(quat1)
+  //origin.transform.orientation.multiply(quat1)
   //mesh.transform.orientation.x += Math.PI / 100
   //camera.transform.orientation.z += Math.PI/100
   /*mesh.material.updateUniform("lightDir",
@@ -168,7 +161,6 @@ render()
 
 
 function setEulerFromQuaternion(quaternion, e = new Vector3()) {
-  let matrix = new Matrix4()
 
   const x = quaternion.x,
     y = quaternion.y,

@@ -215,7 +215,7 @@ export function typeOfUniform(uniform) {
   if (type == "object") {
     if (name === "vec2")
       return UniformTypes.VEC2
-    if (name === "vec3")
+    if (name === "vector3")
       return UniformTypes.VEC3
     if (name === "vec4" || name === "color")
       return UniformTypes.VEC4
@@ -305,7 +305,7 @@ export class UBO {
 
 
     for (let name in ary) {
-      let type = typeOfUniform(ary[name].value)
+      let type = typeOfUniform(ary[name])
       size = UBO.getSize(type)
       tsize = chunk - size;
 
@@ -354,7 +354,7 @@ export class UBO {
 export function createUBO(gl, name, point, uniforms) {
   var [data, bufSize] = UBO.calculate(uniforms);
   let ubo = new UBO(gl, name, point, bufSize, data);
-  //UBO.debugVisualize(ubo);
+  UBO.debugVisualize(ubo);
 
   return ubo
 }
