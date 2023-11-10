@@ -1,9 +1,9 @@
-import { Mat4, Transform3D} from "/math/index.js"
+import { Matrix4, Transform3D} from "/math/index.js"
 
 export class Camera {
   transform = new Transform3D()
-  projection = new Mat4()
-  view = new Mat4()
+  projection = new Matrix4()
+  view = new Matrix4()
   constructor() {
     //this.updateProjection()
   }

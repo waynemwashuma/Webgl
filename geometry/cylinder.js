@@ -4,7 +4,6 @@ import { Attribute } from "../attributes/index.js"
 export class CylinderGeometry extends Geometry {
   constructor(radius = 1, height = 1, numSegments = 15) {
     super()
-    console.log(this);
     const { indices, vertices, normals, uvs } = createCylinder(radius, height, numSegments);
 
     this.setAttribute("indices",

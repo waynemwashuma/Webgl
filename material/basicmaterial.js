@@ -49,7 +49,6 @@ export class BasicMaterial extends Shader {
     
     this.color.copy(color)
     this.texture = texture
-    console.log(texture);
 
     if (texture) this.setUniform("mainTexture", texture)
     this.setUniform("color", this.color)

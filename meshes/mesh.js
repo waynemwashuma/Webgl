@@ -25,7 +25,7 @@ export class Mesh {
   }
   /**
    * @param {WebGL2RenderingContext} gl
-   * @param {Mat4} view
+   * @param {Matrix4!} view
    */
   renderGL(gl,  view, projection) {
     let material = this.material

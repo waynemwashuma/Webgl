@@ -201,6 +201,7 @@ export function getUniformLoc(gl, program, name) {
 }
 
 export function typeOfUniform(uniform) {
+  if(uniform === void 0) return -1
   let name = uniform.constructor.name.toLowerCase()
   let type = typeof uniform
 
@@ -222,11 +223,11 @@ export function typeOfUniform(uniform) {
       return UniformTypes.MAT2
     if (name === "mat3")
       return UniformTypes.MAT3
-    if (name === "mat4" || name === "matrix") return UniformTypes.MAT4
+    if (name === "matrix4")
+      return UniformTypes.MAT4
     if (name === "texture")
       return UniformTypes.TEXTURE
   }
-
   throw "Unsupported type of a uniform value  \'" + name + "\'";
 }
 
@@ -238,7 +239,7 @@ export class UBO {
     this.items = {}
 
     for (var i = 0; i < aryCalc.length; i++) {
-      this.items[aryCalc[i].name] = { offset: aryCalc[i].offset, size: aryCalc[i].dataLen/4 };
+      this.items[aryCalc[i].name] = { offset: aryCalc[i].offset, size: aryCalc[i].dataLen / 4 };
     }
 
     this.name = name;
@@ -249,7 +250,7 @@ export class UBO {
     gl.bufferData(gl.UNIFORM_BUFFER, bufSize, gl.DYNAMIC_DRAW)
     gl.bindBuffer(gl.UNIFORM_BUFFER, null)
     gl.bindBufferBase(gl.UNIFORM_BUFFER, point, this.buffer)
-    
+
   }
   /**
    * @param {string} name
@@ -258,8 +259,8 @@ export class UBO {
   update(gl, name, data) {
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.buffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER,
-    this.items[name].offset, data,0,
-    this.items[name].size
+      this.items[name].offset, data, 0,
+      this.items[name].size
     );
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
     return this;
@@ -295,7 +296,7 @@ export class UBO {
       data = []
     for (let name in ary) {
       data.push({
-        name:"",
+        name: "",
         offset: 0,
         dataLen: 0,
         chunkLen: 0,
@@ -304,7 +305,7 @@ export class UBO {
 
 
     for (let name in ary) {
-      let type = typeOfUniform(ary[name])
+      let type = typeOfUniform(ary[name].value)
       size = UBO.getSize(type)
       tsize = chunk - size;
 
@@ -319,7 +320,7 @@ export class UBO {
       } else chunk -= size
       data[i].offset = offset
       data[i].chunkLen = size
-      data[i].dataLen = size 
+      data[i].dataLen = size
       data[i].name = name
       offset += size
       i++
@@ -332,7 +333,7 @@ export class UBO {
       chunk = 0,
       tchunk = 0,
       itm = null
-    if(ubo !== void 0)console.log(ubo);
+    if (ubo !== void 0) console.log(ubo);
     for (let i in ubo.items) {
       itm = ubo.items[i]
 
@@ -353,8 +354,8 @@ export class UBO {
 export function createUBO(gl, name, point, uniforms) {
   var [data, bufSize] = UBO.calculate(uniforms);
   let ubo = new UBO(gl, name, point, bufSize, data);
-  UBO.debugVisualize(ubo);
-  
+  //UBO.debugVisualize(ubo);
+
   return ubo
 }
 UBO.Cache = [];

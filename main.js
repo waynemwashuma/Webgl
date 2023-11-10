@@ -20,7 +20,12 @@ import {
   QuadGeometry,
   UVShereGeometry
 } from "./geometry/index.js"
-import { Vector3, Color } from "/math/index.js"
+import {
+  Vector3,
+  Color,
+  Quaternion,
+  Matrix4
+} from "/math/index.js"
 import { Renderer } from "./renderer.js"
 import { Texture } from "./textures/index.js"
 import { createUBO } from "./functions.js"
@@ -99,24 +104,24 @@ let tex = new Texture("./UV_Grid_Lrg.jpg")
 let tex2 = new Texture("./texture.png")
 
 let origin = new Mesh(
-  new BoxGeometry(1, 1,1),
+  new BoxGeometry(1, 1, 1),
   new BasicMaterial({
-    color : new Color(1,1,1),
-    texture:tex,
+    color: new Color(1, 1, 1),
+    texture: tex,
   })
 )
 let mesh = new Mesh(
   new UVShereGeometry(0.5),
   new BasicMaterial({
-    color : new Color(1,1,1),
-    texture:tex,
+    color: new Color(1, 1, 1),
+    texture: tex,
   })
 )
 let mesh2 = new Mesh(
   new UVShereGeometry(0.5),
   new BasicMaterial({
-    color : new Color(1,1,1),
-    texture:tex,
+    color: new Color(1, 1, 1),
+    texture: tex,
   })
 )
 
@@ -154,3 +159,55 @@ function render(dt) {
   angle += Math.PI / 100
 }
 render()
+
+
+function setEulerFromQuaternion(quaternion, e = new Vector3()) {
+  let matrix = new Matrix4()
+
+  const x = quaternion.x,
+    y = quaternion.y,
+    z = quaternion.z,
+    w = quaternion.w;
+  const x2 = x + x,
+    y2 = y + y,
+    z2 = z + z;
+  const xx = x * x2,
+    xy = x * y2,
+    xz = x * z2;
+  const yy = y * y2,
+    yz = y * z2,
+    zz = z * z2;
+  const wx = w * x2,
+    wy = w * y2,
+    wz = w * z2;
+
+  const m11 = (1 - (yy + zz))
+  const m12 = (xy - wz)
+  const m13 = (xz + wy)
+  const m23 = (yz - wx)
+  const m33 = (1 - (xx + yy))
+  const m32 = (yz + wx )
+
+  e.y = Math.asin(clamp(m13, -1, 1));
+
+  if (Math.abs(m13) < 0.9999999) {
+    e.x = Math.atan2(-m23, m33);
+    e.z = Math.atan2(-m12, m11);
+  } else {
+    e.x = Math.atan2(m32, m22);
+    e.z = 0;
+  }
+  return e
+}
+
+function clamp(v, min, max) {
+  if (min > v) return min
+  if (max < v) return max
+  return v
+}
+let quat1 = new Quaternion()
+let euler = new Vector3(0.7071, 0.7071, 0)
+quat1.setFromEuler(euler)
+console.log(quat1);
+
+console.log(setEulerFromQuaternion(quat1))

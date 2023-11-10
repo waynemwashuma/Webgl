@@ -128,6 +128,5 @@ function createIcoSphere(radius, subdivisions) {
       middlePointIndexCache[p2.toString()]
     );
   }
-  console.log(indices);
   return { vertices, normals, uvs, indices };
 }

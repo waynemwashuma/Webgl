@@ -1,4 +1,4 @@
-import { Mat4 } from "./Mat4.js"
+import { Matrix4 } from "./matrix4.js"
 import { Vector3 } from "./vec3.js"
 import { Quaternion } from "./quaternion.js"
 
@@ -8,7 +8,7 @@ let _scale = new Vector3()
 let _quat = new Quaternion()
 export class Transform3D {
   constructor() {
-    this.matrix = new Mat4()
+    this.matrix = new Matrix4()
     this.position = new Vector3()
     this.orientation = new Vector3()
     this.scale = new Vector3(1, 1, 1)

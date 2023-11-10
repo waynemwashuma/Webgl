@@ -1,5 +1,6 @@
 import {
-  createProgramFromSrc
+  createProgramFromSrc,
+  typeOfUniform
 } from "../functions.js"
 import {
   UNI_CAM_MAT,
@@ -60,7 +61,7 @@ export class Shader {
     for (let name in this.uniforms) {
       let uniform = this.uniforms[name]
       uniform.type = typeOfUniform(
-        this.uniforms[name]
+        this.uniforms[name].value
       )
       if (uniform.type === UniformTypes.TEXTURE)
         uniform.value.init(gl)
@@ -112,36 +113,6 @@ export class Shader {
   }
 }
 
-function typeOfUniform(uniform) {
-  let name = uniform.value.constructor.name.toLowerCase()
-  let type = typeof uniform.value
-
-  if (type == "boolean") {
-    return UniformTypes.BOOL
-  }
-  if (type == "number") {
-    if (Number.isInteger(uniform))
-      return UniformTypes.INT
-    return UniformTypes.FLOAT
-  }
-  if (type == "object") {
-    if (name === "vec2")
-      return UniformTypes.VEC2
-    if (name === "vector3")
-      return UniformTypes.VEC3
-    if (name === "vec4" || name === "color")
-      return UniformTypes.VEC4
-    if (name === "mat2")
-      return UniformTypes.MAT2
-    if (name === "mat3")
-      return UniformTypes.MAT3
-    if (name === "mat4" || name === "matrix") return UniformTypes.MAT4
-    if (name === "texture")
-      return UniformTypes.TEXTURE
-  }
-
-  throw "Unsupported type of a uniform value."
-}
 
 /**
  * @param {WebGL2RenderingContext} gl
