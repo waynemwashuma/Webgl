@@ -228,7 +228,7 @@ export class Quaternion {
   }
 
   dot(v) {
-    return this.x * v._x + this.y * v._y + this.z * v._z + this.w * v._w;
+    return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
   }
 
   lengthSq() {
@@ -268,21 +268,19 @@ export class Quaternion {
   }
 
   static multiply(a, b) {
-    const qax = a._x,
-      qay = a._y,
-      qaz = a._z,
-      qaw = a._w;
-    const qbx = b._x,
-      qby = b._y,
-      qbz = b._z,
-      qbw = b._w;
+    const qax = a.x,
+      qay = a.y,
+      qaz = a.z,
+      qaw = a.w;
+    const qbx = b.x,
+      qby = b.y,
+      qbz = b.z,
+      qbw = b.w;
 
     this.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
     this.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
     this.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
     this.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
-
-    this._onChangeCallback();
 
     return this;
 
@@ -298,14 +296,14 @@ export class Quaternion {
       z = this.z,
       w = this.w;
 
-    let cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
+    let cosHalfTheta = w * qb.w + x * qb.x + y * qb.y + z * qb.z;
 
     if (cosHalfTheta < 0) {
 
-      this.w = -qb._w;
-      this.x = -qb._x;
-      this.y = -qb._y;
-      this.z = -qb._z;
+      this.w = -qb.w;
+      this.x = -qb.x;
+      this.y = -qb.y;
+      this.z = -qb.z;
 
       cosHalfTheta = -cosHalfTheta;
 
@@ -376,7 +374,7 @@ export class Quaternion {
   }
 
   equals(quaternion) {
-    return (quaternion._x === this.x) && (quaternion._y === this.y) && (quaternion._z === this.z) && (quaternion._w === this.w);
+    return (quaternion.x === this.x) && (quaternion.y === this.y) && (quaternion.z === this.z) && (quaternion.w === this.w);
   }
 
   fromArray(array, offset = 0) {

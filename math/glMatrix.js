@@ -1049,7 +1049,7 @@ mat4.scale = function(mat, vec, dest) {
 /*
  * mat4.rotate
  * Rotates a matrix by the given angle around the specified axis
- * If rotating around a primary axis (X,Y,Z) one of the specialized rotation functions should be used instead for performance
+ * If rotating around a primary axis (X,Y,Z) one of the specialized orientation functions should be used instead for performance
  *
  * Params:
  * mat - mat4 to rotate
@@ -1080,7 +1080,7 @@ mat4.rotate = function(mat, angle, axis, dest) {
 	var a10 = mat[4], a11 = mat[5], a12 = mat[6], a13 = mat[7];
 	var a20 = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11];
 	
-	// Construct the elements of the rotation matrix
+	// Construct the elements of the orientation matrix
 	var b00 = x*x*t + c, b01 = y*x*t + z*s, b02 = z*x*t - y*s;
 	var b10 = x*y*t - z*s, b11 = y*y*t + c, b12 = z*y*t + x*s;
 	var b20 = x*z*t + y*s, b21 = y*z*t - x*s, b22 = z*z*t + c;
@@ -1094,7 +1094,7 @@ mat4.rotate = function(mat, angle, axis, dest) {
 		dest[15] = mat[15];
 	}
 	
-	// Perform rotation-specific matrix multiplication
+	// Perform orientation-specific matrix multiplication
 	dest[0] = a00*b00 + a10*b01 + a20*b02;
 	dest[1] = a01*b00 + a11*b01 + a21*b02;
 	dest[2] = a02*b00 + a12*b01 + a22*b02;

@@ -10,9 +10,9 @@ export class Camera {
   updateMatrix() {
     this.transform.matrix.identity()
       .translate(this.transform.position)
-      .rotateX(this.transform.rotation.x)
-      .rotateY(this.transform.rotation.y)
-      .rotateZ(this.transform.rotation.z)
+      .rotateX(this.transform.orientation.x)
+      .rotateY(this.transform.orientation.y)
+      .rotateZ(this.transform.orientation.z)
 
     this.view.copy(this.transform.matrix).inverse()
   }

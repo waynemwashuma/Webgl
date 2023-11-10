@@ -79,13 +79,13 @@ export class Mat4 {
     mat4.transpose(this.raw)
     return this
   }
-  compose(position, rotation, scale) {
+  compose(position, orientation, scale) {
     mat4.identity(this.raw)
     this
       .translate(position)
-      .rotateX(rotation.x)
-      .rotateY(rotation.y)
-      .rotateZ(rotation.z)
+      .rotateX(orientation.x)
+      .rotateY(orientation.y)
+      .rotateZ(orientation.z)
       .scale(scale)
     return this
   }

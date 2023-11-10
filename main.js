@@ -132,16 +132,16 @@ renderer.add(origin)
 renderer.add(mesh)
 renderer.add(mesh2)
 mesh.parent = origin
-mesh2.parent = mesh
+//mesh2.parent = mesh
 let angle = 0
 
 function render(dt) {
   origin.transform.position.x = Math.sin(angle)
 
-  origin.transform.rotation.y += Math.PI / 1000
-  origin.transform.rotation.z += Math.PI / 1000
-  //mesh.transform.rotation.x += Math.PI / 100
-  //camera.transform.rotation.z += Math.PI/100
+  origin.transform.orientation.y += Math.PI / 1000
+  origin.transform.orientation.z += Math.PI / 1000
+  //mesh.transform.orientation.x += Math.PI / 100
+  //camera.transform.orientation.z += Math.PI/100
   /*mesh.material.updateUniform("lightDir",
     new Vector3(
       Math.cos(angle),
