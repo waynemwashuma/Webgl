@@ -8,6 +8,7 @@ import {
 
 export class Mesh {
   transform = new Transform3D()
+  parent = null
   constructor(geometry, material) {
     this.geometry = geometry
     this.material = material
@@ -18,10 +19,9 @@ export class Mesh {
     this.material.setUniform(UNI_CAM_MAT,camera.transform.matrix)
     this.material.init(gl)
     this.geometry.init(gl,this.material.program)
-    
   }
   update() {
-    this.transform.updateMatrix()
+    this.transform.updateMatrix(this.parent?.transform)
   }
   /**
    * @param {WebGL2RenderingContext} gl

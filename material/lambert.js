@@ -71,8 +71,8 @@ export class LambertMaterial extends Shader {
         mainTexture = null,
         opacity = 1.0,
         ambientIntensity = 0.1,
-        lightDir = new Vec3(0,0,1),
-        lightPos = new Vec3(0,1,3)
+        lightDir = new Vector3(0,0,1),
+        lightPos = new Vector3(0,1,3)
     } = options
 
     super(vshader, fshader, {

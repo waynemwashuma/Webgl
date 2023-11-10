@@ -127,7 +127,7 @@ function typeOfUniform(uniform) {
   if (type == "object") {
     if (name === "vec2")
       return UniformTypes.VEC2
-    if (name === "vec3")
+    if (name === "vector3")
       return UniformTypes.VEC3
     if (name === "vec4" || name === "color")
       return UniformTypes.VEC4

@@ -127,6 +127,10 @@ export class Mat4 {
 
     return array
   }
+  multiply(matrix){
+    mat4.multiply(this.raw,matrix.raw,this.raw)
+    return this
+  }
   makePerspective(fovy, aspect, near, far) {
     mat4.perspective(fovy, aspect, near, far, this.raw)
     return this

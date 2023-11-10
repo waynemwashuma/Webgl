@@ -20,7 +20,7 @@ import {
   QuadGeometry,
   UVShereGeometry
 } from "./geometry/index.js"
-import { Vec3, Color } from "/math/index.js"
+import { Vector3, Color } from "/math/index.js"
 import { Renderer } from "./renderer.js"
 import { Texture } from "./textures/index.js"
 import { createUBO } from "./functions.js"
@@ -99,42 +99,56 @@ let tex = new Texture("./UV_Grid_Lrg.jpg")
 let tex2 = new Texture("./texture.png")
 
 let origin = new Mesh(
-  new BoxGeometry(0.2, 0.2),
-  new Shader(vshader, fshader)
+  new BoxGeometry(1, 1,1),
+  new BasicMaterial({
+    color : new Color(1,1,1),
+    texture:tex,
+  })
 )
 let mesh = new Mesh(
-  new UVShereGeometry(2),
-  new LambertMaterial({
-    lightPos: new Vec3(0, 1, 3),
-    lightDir: new Vec3(0, 0, -1),
-    ambientIntensity: 0.1,
+  new UVShereGeometry(0.5),
+  new BasicMaterial({
+    color : new Color(1,1,1),
+    texture:tex,
+  })
+)
+let mesh2 = new Mesh(
+  new UVShereGeometry(0.5),
+  new BasicMaterial({
+    color : new Color(1,1,1),
+    texture:tex,
   })
 )
 
 renderer.setViewport(300, 300)
 renderer.setViewport(innerWidth, innerHeight)
-
+//gl.enable(gl.DEPTH_TEST)
 camera.makePerspective(120)
-camera.transform.position.z = 3
-mesh.transform.position.x = 0
+camera.transform.position.z = 10
+mesh.transform.positionOffset.x = 2
+mesh2.transform.positionOffset.y = 2
 
-//renderer.add(origin)
+renderer.add(origin)
 renderer.add(mesh)
-
+renderer.add(mesh2)
+mesh.parent = origin
+mesh2.parent = mesh
 let angle = 0
 
 function render(dt) {
-  //mesh.transform.rotation.y += Math.PI / 1000
-  //mesh.transform.rotation.z += Math.PI / 1000
+  origin.transform.position.x = Math.sin(angle)
+
+  origin.transform.rotation.y += Math.PI / 1000
+  //origin.transform.rotation.z += Math.PI / 1000
   //mesh.transform.rotation.x += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
-  mesh.material.updateUniform("lightDir",
-    new Vec3(
+  /*mesh.material.updateUniform("lightDir",
+    new Vector3(
       Math.cos(angle),
       Math.sin(angle),
       Math.sin(angle)
     ).normalize()
-  )
+  )*/
   renderer.update()
   requestAnimationFrame(render)
   angle += Math.PI / 100
