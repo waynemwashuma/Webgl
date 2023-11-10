@@ -10,10 +10,10 @@ export class Transform3D {
   constructor() {
     this.matrix = new Matrix4()
     this.position = new Vector3()
-    this.orientation = new Vector3()
+    this.orientation = new Quaternion()
     this.scale = new Vector3(1, 1, 1)
     this.worldPosition = new Vector3()
-    this.worldOrientation = new Vector3()
+    this.worldOrientation = new Quaternion()
     this.worldScale = new Vector3(1,1,1)
   }
   updateMatrix(parent) {
@@ -21,15 +21,14 @@ export class Transform3D {
     this.worldOrientation.copy(this.orientation)
     this.worldScale.copy(this.scale)
     if (parent !== void 0) {
-      _quat.setFromEuler(parent.worldOrientation)
       this.worldScale
         .multiply(parent.worldScale)
       this.worldOrientation
-       .add(parent.worldOrientation)
+       .multiply(parent.worldOrientation)
        
       this.worldPosition
         .multiply(parent.worldScale)
-        .applyQuaternion(_quat)
+        .applyQuaternion(parent.orientation)
         .add(parent.worldPosition)
     }
     

@@ -260,14 +260,14 @@ export class Quaternion {
   }
 
   multiply(q) {
-    return Quaternion.multiply(this, q);
+    return Quaternion.multiply(this, q,this);
   }
 
   premultiply(q) {
-    return Quaternion.multiply(q, this);
+    return Quaternion.multiply(q, this,this);
   }
 
-  static multiply(a, b) {
+  static multiply(a, b,out) {
     const qax = a.x,
       qay = a.y,
       qaz = a.z,
@@ -277,10 +277,10 @@ export class Quaternion {
       qbz = b.z,
       qbw = b.w;
 
-    this.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
-    this.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
-    this.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
-    this.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
+    out.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
+    out.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
+    out.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
+    out.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
 
     return this;
 
