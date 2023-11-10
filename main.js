@@ -107,7 +107,7 @@ let mesh = new Mesh(
   new LambertMaterial({
     lightPos: new Vec3(0, 1, 3),
     lightDir: new Vec3(0, 0, -1),
-    ambient: 0.1,
+    ambientIntensity: 0.1,
   })
 )
 
