@@ -11,6 +11,7 @@ export class Renderer {
   gl = null
   dpr = 0
   culling = true
+  depthTest = true
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
     this.dpr = devicePixelRatio
@@ -23,6 +24,9 @@ export class Renderer {
     if (this.culling) {
       this.gl.enable(this.gl.CULL_FACE)
       this.gl.cullFace(this.gl.FRONT)
+    }
+    if (this.depthTest) {
+      this.gl.enable(this.gl.DEPTH_TEST)
     }
     this.setGlobalUBO("camera", {
       "view": this.camera.view,
