@@ -330,7 +330,7 @@ export class Quaternion {
       this.z = s * z + t * this.z;
 
       this.normalize();
-      this._onChangeCallback();
+      
 
       return this;
 
@@ -345,8 +345,6 @@ export class Quaternion {
     this.x = (x * ratioA + this.x * ratioB);
     this.y = (y * ratioA + this.y * ratioB);
     this.z = (z * ratioA + this.z * ratioB);
-
-    this._onChangeCallback();
 
     return this;
   }
@@ -383,8 +381,7 @@ export class Quaternion {
     this.z = array[offset + 2];
     this.w = array[offset + 3];
 
-    this._onChangeCallback();
-
+    
     return this;
 
   }
