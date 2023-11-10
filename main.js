@@ -122,11 +122,11 @@ let mesh2 = new Mesh(
 
 renderer.setViewport(300, 300)
 renderer.setViewport(innerWidth, innerHeight)
-//gl.enable(gl.DEPTH_TEST)
+
 camera.makePerspective(120)
 camera.transform.position.z = 10
-mesh.transform.positionOffset.x = 2
-mesh2.transform.positionOffset.y = 2
+mesh.transform.position.x = 2
+mesh2.transform.position.y = 2
 
 renderer.add(origin)
 renderer.add(mesh)
@@ -139,7 +139,7 @@ function render(dt) {
   origin.transform.position.x = Math.sin(angle)
 
   origin.transform.rotation.y += Math.PI / 1000
-  //origin.transform.rotation.z += Math.PI / 1000
+  origin.transform.rotation.z += Math.PI / 1000
   //mesh.transform.rotation.x += Math.PI / 100
   //camera.transform.rotation.z += Math.PI/100
   /*mesh.material.updateUniform("lightDir",

@@ -12,39 +12,31 @@ export class Transform3D {
     this.position = new Vector3()
     this.rotation = new Vector3()
     this.scale = new Vector3(1, 1, 1)
-    this.positionOffset = new Vector3()
-    this.rotationOffset = new Vector3()
-    this.scaleOffset = new Vector3(1,1,1)
+    this.worldPosition = new Vector3()
+    this.worldRotation = new Vector3()
+    this.worldScale = new Vector3(1,1,1)
   }
   updateMatrix(parent) {
-    if (parent === void 0) {
-      this.matrix.compose(
-        this.position,
-        this.rotation,
-        this.scale
-      )
-      return
+    this.worldPosition.copy(this.position)
+    this.worldRotation.copy(this.rotation)
+    this.worldScale.copy(this.scale)
+    if (parent !== void 0) {
+      _quat.setFromEuler(parent.worldRotation)
+      this.worldScale
+        .multiply(parent.worldScale)
+      this.worldRotation
+       .add(parent.worldRotation)
+       
+      this.worldPosition
+        .multiply(parent.worldScale)
+        .applyQuaternion(_quat)
+        .add(parent.worldPosition)
     }
-    //this.matrix.multiply(parent.matrix)
-    //return
-    _quat.setFromEuler(parent.rotation)
     
-    this.scale
-      .copy(this.scaleOffset)
-      .multiply(parent.scale)
-    this.rotation
-      .copy(this.rotationOffset)
-      .add(parent.rotation)
-    this.position
-      .copy(this.positionOffset)
-      .multiply(parent.scale)
-      .applyQuaternion(_quat)
-      .add(parent.position)
-      
     this.matrix.compose(
-      this.position,
-      this.rotation,
-      this.scale
+      this.worldPosition,
+      this.worldRotation,
+      this.worldScale
     )
   }
 }
