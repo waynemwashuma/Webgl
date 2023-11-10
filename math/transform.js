@@ -5,7 +5,7 @@ let _position = new Vector3()
 let _rotation = new Vector3()
 let _scale = new Vector3()
 
-export class Transform {
+export class Transform3D {
   constructor() {
     this.matrix = new Mat4()
     this.position = new Vector3()

@@ -1,4 +1,4 @@
-import { Transform } from "../math/transform.js"
+import { Transform3D } from "../math/transform.js"
 import {
   UNI_CAM_MAT,
   UNI_PROJ_MAT,
@@ -7,7 +7,7 @@ import {
 } from "../constants.js"
 
 export class Mesh {
-  transform = new Transform()
+  transform = new Transform3D()
   constructor(geometry, material) {
     this.geometry = geometry
     this.material = material

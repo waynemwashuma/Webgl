@@ -1,7 +1,7 @@
-import { Mat4, Transform} from "/math/index.js"
+import { Mat4, Transform3D} from "/math/index.js"
 
 export class Camera {
-  transform = new Transform()
+  transform = new Transform3D()
   projection = new Mat4()
   view = new Mat4()
   constructor() {
