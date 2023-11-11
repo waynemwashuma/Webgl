@@ -23,7 +23,7 @@ export class Renderer {
     
     if (this.culling) {
       this.gl.enable(this.gl.CULL_FACE)
-      this.gl.cullFace(this.gl.FRONT)
+      this.gl.cullFace(this.gl.BACK)
     }
     if (this.depthTest) {
       this.gl.enable(this.gl.DEPTH_TEST)

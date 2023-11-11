@@ -12,13 +12,15 @@ import { Mesh } from "./meshes/mesh.js"
 import {
   Shader,
   BasicMaterial,
-  LambertMaterial
+  LambertMaterial,
+  PhongMaterial
 } from "./material/index.js"
 import {
   BoxGeometry,
   Geometry,
   QuadGeometry,
-  UVShereGeometry
+  UVShereGeometry,
+  CylinderGeometry
 } from "./geometry/index.js"
 import {
   Vector3,
@@ -117,36 +119,26 @@ let tex = new Texture("./UV_Grid_Lrg.jpg")
 let tex2 = new Texture("./texture.png")
 
 let origin = new Mesh(
-  new BoxGeometry(1, 1, 1),
+  new CylinderGeometry(1, 1),
   new BasicMaterial({
-    color: new Color(1, 1, 0),
+    color: new Color(1, 1, 1),
     texture: tex,
   })
 )
 let mesh = new Mesh(
-  new UVShereGeometry(3),
-  new Shader(vshader, fshader, {
-    mainTexture: tex,
-    color: new Color(1, 1, 1),
-    opacity: 1.0,
-
-    lightDir: new Vector3(0, 0, -1),
-
-    ambientColor: new Color(1, 1, 1),
-    ambientIntensity: 0.15,
-
-    diffuseColor: new Color(1, 1, 1),
-    diffuseIntensity: 0.65,
-
-    specularStrength: 0.15,
-    specularShininess: 4,
+  new CylinderGeometry(1),
+  new PhongMaterial({
+    mainTexture:tex,
+    ambientIntensity:0.0,
+    specularStrength:0.15,
+    specularShininess:4
   })
 
 )
 let mesh2 = new Mesh(
   new UVShereGeometry(3),
   new LambertMaterial({
-    mainTexture: tex,
+    //mainTexture: tex,
     color: new Color(1, 1, 1),
     tint: 1.0,
     lightDir: new Vector3(0, 0, -1)
@@ -158,10 +150,10 @@ renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
 camera.transform.position.z = 10
-//mesh.transform.position.x = 2
+mesh.transform.position.x = 2
 mesh2.transform.position.y = 2
 
-//renderer.add(origin)
+renderer.add(origin)
 renderer.add(mesh)
 //renderer.add(mesh2)
 //mesh.parent = origin
@@ -177,10 +169,11 @@ function render(dt) {
   //mesh.transform.position.x = Math.sin(angle)
   //mesh.transform.position.y = Math.cos(angle)
   //camera.transform.orientation.multiply(quat1)
+  origin.transform.orientation.multiply(quat1)
   mesh.transform.orientation.multiply(quat1)
   //mesh.transform.orientation.x += Math.PI / 100
   //camera.transform.orientation.z += Math.PI/100
-  mesh.material.updateUniform("lightDir",
+  /*mesh.material.updateUniform("lightDir",
     new Vector3(
       Math.cos(angle),
       0,//Math.sin(angle),
