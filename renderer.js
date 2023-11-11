@@ -30,7 +30,8 @@ export class Renderer {
     }
     this.setGlobalUBO("camera", {
       "view": this.camera.view,
-      "projection": this.camera.projection
+      "projection": this.camera.projection,
+      "camPosition": this.camera.transform.position
     })
   }
   setGlobalUBO(name, data) {
@@ -82,6 +83,9 @@ export class Renderer {
       )
       this.updateUBO(
         "camera", "projection", this.camera.projection
+      )
+      this.updateUBO(
+        "camera", "camPosition", this.camera.transform.position
       )
     }
     for (var i = 0; i < this.meshes.length; i++) {

@@ -44,6 +44,7 @@ let vshader =
   uniform camera {
     mat4 view;
     mat4 projection;
+    vec3 camPosition;
   };
   
   uniform mat4 model;
@@ -54,14 +55,14 @@ let vshader =
   
   out vec2 v_uv;
   out vec3 v_normal;
-  out mat3 invNormalMat;
-  out vec3 lightDirec;
+  out vec3 camDirection;
   
   void main(){
     gl_Position = projection * view * model * vec4(position,1.0);
-    invNormalMat = mat3(model);
+    mat3 invNormalMat = mat3(model);
     v_uv = uv;
-    v_normal = normal;
+    v_normal = normalize(invNormalMat * normal);
+    camDirection =  gl_Position.xyz - camPosition;
   }
 `
 let fshader =
@@ -71,23 +72,25 @@ let fshader =
   in float brightness;
   in vec2 v_uv;
   in vec3 v_normal;
-  in mat3 invNormalMat;
+  in vec3 camDirection;
   
   uniform sampler2D mainTexture;
   uniform vec3 lightDir;
   uniform float ambientIntensity;
   uniform vec4 ambientColor;
   uniform float diffuseIntensity;
+  uniform float specularShininess;
+  uniform float specularStrength;
   uniform float opacity;
   uniform vec4 color;
-  uniform vec4 lightColor;
+  uniform vec4 diffuseColor;
   
   out vec4 FragColor;
  
  //Remember you set the dir to negative because light direction is the opposite direction of dir.
  float calcBrightness(vec3 normal, vec3 dir) {
    return max(
-     dot(normalize(normal), -dir),
+     dot(normal, -dir),
      0.0
    );
  }
@@ -98,11 +101,14 @@ let fshader =
       baseColor = color.xyz;
     vec3 ambient = ambientColor.xyz * ambientIntensity;
     
-    float brightness = calcBrightness(invNormalMat * v_normal,lightDir);
+    float diffusebrightness = calcBrightness(v_normal,lightDir);
+    vec3 diffuse = diffuseColor.xyz * diffusebrightness * diffuseIntensity;
     
-    vec3 diffuse = lightColor.xyz * brightness * diffuseIntensity;
+    vec3 reflectNorm = reflect(lightDir,v_normal);
+    float specularBrightness = calcBrightness(reflectNorm,camDirection);
+    vec3 specular = pow(specularBrightness,specularShininess) * diffuseColor.xyz * specularStrength * diffuse;
     
-    vec3 finalColor = baseColor * (ambient + diffuse);
+    vec3 finalColor = baseColor * (ambient + diffuse + specular );
     FragColor = vec4(finalColor,opacity);
 }
 `
@@ -118,16 +124,22 @@ let origin = new Mesh(
   })
 )
 let mesh = new Mesh(
-  new UVShereGeometry(5),
+  new UVShereGeometry(3),
   new Shader(vshader, fshader, {
     mainTexture: tex,
     color: new Color(1, 1, 1),
-    ambientColor:new Color(1,1,1),
-    ambientIntensity : 0.15,
     opacity: 1.0,
+
     lightDir: new Vector3(0, 0, -1),
-    lightColor:new Color(1,1,1),
-    diffuseIntensity:0.65
+
+    ambientColor: new Color(1, 1, 1),
+    ambientIntensity: 0.15,
+
+    diffuseColor: new Color(1, 1, 1),
+    diffuseIntensity: 0.65,
+
+    specularStrength: 0.15,
+    specularShininess: 4,
   })
 
 )
@@ -156,29 +168,29 @@ renderer.add(mesh)
 //mesh2.parent = mesh
 
 let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI / 100, Math.PI / 100, 0)
+let euler = new Vector3(Math.PI / 1000,Math.PI/1000, 0)
 quat1.setFromEuler(euler)
 
 let angle = 0
 
 function render(dt) {
-  //origin.transform.position.x = Math.sin(angle)
-  //origin.transform.position.y = Math.cos(angle)
-
-  origin.transform.orientation.multiply(quat1)
+  //mesh.transform.position.x = Math.sin(angle)
+  //mesh.transform.position.y = Math.cos(angle)
+  //camera.transform.orientation.multiply(quat1)
+  mesh.transform.orientation.multiply(quat1)
   //mesh.transform.orientation.x += Math.PI / 100
   //camera.transform.orientation.z += Math.PI/100
   mesh.material.updateUniform("lightDir",
     new Vector3(
       Math.cos(angle),
-      Math.sin(angle),
+      0,//Math.sin(angle),
       Math.sin(angle)
     ).normalize()
-  )/**/
+  ) /**/
   renderer.update()
   requestAnimationFrame(render)
   angle += Math.PI / 100
 }
 render()
 
-console.log(origin);
+console.log(mesh);
