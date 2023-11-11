@@ -26,31 +26,32 @@ let fshader =
   
   uniform sampler2D mainTexture;
   uniform vec4 color;
+  uniform float opacity;
   
   in vec2 v_uv;
   
   out vec4 finalColor;
   void main(){
-    finalColor = texture(mainTexture,v_uv);
-    //finalColor = vec4(v_uv,0.0,1.0);
+    finalColor = texture(mainTexture,v_uv) * color ;
+    finalColor.a = opacity;
+    if(finalColor.xyz == vec3(0.0,0.0,0.0))
+       finalColor = color;
+    finalColor.a = opacity;
 }
 `
-
+let blankOptions = {}
 export class BasicMaterial extends Shader {
-  color = new Color()
-  texture = null
-  constructor(options) {
+  constructor(options = blankOptions) {
     let {
-      color = new Color(1, 1, 1),
+      color = new Color(0, 1, 1),
+        opacity = 0.99999,
         texture = null,
     } = options
-    
-    super(vshader,fshader)
-    
-    this.color.copy(color)
-    this.texture = texture
 
-    if (texture) this.setUniform("mainTexture", texture)
-    this.setUniform("color", this.color)
+    super(vshader, fshader)
+
+    if (texture)this.setUniform("mainTexture", texture)
+    this.setUniform("color", color)
+    this.setUniform("opacity", opacity)
   }
 }

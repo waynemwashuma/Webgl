@@ -98,7 +98,7 @@ let tex2 = new Texture("./texture.png")
 let origin = new Mesh(
   new BoxGeometry(1, 1, 1),
   new BasicMaterial({
-    color: new Color(1, 1, 1),
+    color: new Color(1, 1, 0),
     texture: tex,
   })
 )
@@ -110,7 +110,7 @@ let mesh = new Mesh(
 let mesh2 = new Mesh(
   new QuadGeometry(0.5),
   new LambertMaterial({
-    color: new Color(1, 1, 1),
+    color: new Color(1, 1, 0),
     texture: tex,
     tint:1.0,
     lightDir : new Vector3(0,0,-1)
@@ -126,24 +126,22 @@ mesh.transform.position.x = 2
 mesh2.transform.position.y = 2
 
 renderer.add(origin)
-renderer.add(mesh)
-renderer.add(mesh2)
-mesh.parent = origin
+//renderer.add(mesh)
+//renderer.add(mesh2)
+//mesh.parent = origin
 //mesh2.parent = mesh
 
 let quat1 = new Quaternion()
 let euler = new Vector3(Math.PI/100, Math.PI/100, 0)
 quat1.setFromEuler(euler)
-console.log(quat1);
 
-console.log(setEulerFromQuaternion(quat1))
 let angle = 0
 
 function render(dt) {
   //origin.transform.position.x = Math.sin(angle)
   //origin.transform.position.y = Math.cos(angle)
 
-  //origin.transform.orientation.multiply(quat1)
+  origin.transform.orientation.multiply(quat1)
   //mesh.transform.orientation.x += Math.PI / 100
   //camera.transform.orientation.z += Math.PI/100
   /*mesh.material.updateUniform("lightDir",
@@ -159,47 +157,4 @@ function render(dt) {
 }
 render()
 
-
-function setEulerFromQuaternion(quaternion, e = new Vector3()) {
-
-  const x = quaternion.x,
-    y = quaternion.y,
-    z = quaternion.z,
-    w = quaternion.w;
-  const x2 = x + x,
-    y2 = y + y,
-    z2 = z + z;
-  const xx = x * x2,
-    xy = x * y2,
-    xz = x * z2;
-  const yy = y * y2,
-    yz = y * z2,
-    zz = z * z2;
-  const wx = w * x2,
-    wy = w * y2,
-    wz = w * z2;
-
-  const m11 = (1 - (yy + zz))
-  const m12 = (xy - wz)
-  const m13 = (xz + wy)
-  const m23 = (yz - wx)
-  const m33 = (1 - (xx + yy))
-  const m32 = (yz + wx )
-
-  e.y = Math.asin(clamp(m13, -1, 1));
-
-  if (Math.abs(m13) < 0.9999999) {
-    e.x = Math.atan2(-m23, m33);
-    e.z = Math.atan2(-m12, m11);
-  } else {
-    e.x = Math.atan2(m32, m22);
-    e.z = 0;
-  }
-  return e
-}
-
-function clamp(v, min, max) {
-  if (min > v) return min
-  if (max < v) return max
-  return v
-}
+console.log(origin);
