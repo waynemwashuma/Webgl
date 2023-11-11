@@ -11,7 +11,7 @@ export const UNI_MODEL_MAT = "model"
 export const UniformTypes = {
   BOOL : 0,
   FLOAT : 1,
-  INT : 2,
+  //INT : 2,
   VEC2 : 3,
   VEC3 : 4,
   VEC4 : 5,

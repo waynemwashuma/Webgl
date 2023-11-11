@@ -207,11 +207,8 @@ export function typeOfUniform(uniform) {
 
   if (type == "boolean")
     return UniformTypes.BOOL
-  if (type == "number") {
-    if (Number.isInteger(uniform))
-      return UniformTypes.INT
+  if (type == "number") 
     return UniformTypes.FLOAT
-  }
   if (type == "object") {
     if (name === "vec2")
       return UniformTypes.VEC2
