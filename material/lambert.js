@@ -32,16 +32,17 @@ let vshader =
 let fshader =
   `#version 300 es
   precision mediump float;
-  uniform sampler2D texture1;
   
   in float brightness;
   in vec2 v_uv;
   in vec3 v_normal;
   in mat3 invNormalMat;
   
+  uniform sampler2D mainTexture;
   uniform vec3 lightDir;
   uniform float ambient;
   uniform float opacity;
+  uniform vec4 color;
   
   out vec4 FragColor;
  
@@ -54,11 +55,14 @@ let fshader =
  }
  
  void main(){
-    vec4 color = FragColor = vec4(1.0,1.0,0.0,1.0);
+    vec4 fcolor = texture(mainTexture,v_uv) * color ;
+    if(fcolor.xyz == vec3(0.0,0.0,0.0))
+       fcolor = color;
+    
     float brightness = calcBrightness(v_normal,invNormalMat,lightDir);
     
-    FragColor = color * ambient + 
-    (1.0 - ambient) * color * brightness;
+    FragColor = fcolor * ambient + 
+    (1.0 - ambient) * fcolor * brightness;
     FragColor.a = opacity;
 }
 `
@@ -70,16 +74,18 @@ export class LambertMaterial extends Shader {
       color = new Color(1, 1, 1),
         mainTexture = null,
         opacity = 1.0,
-        ambientIntensity = 0.1,
+        ambientIntensity = 0.0,
         lightDir = new Vector3(0,0,1),
         lightPos = new Vector3(0,1,3)
     } = options
 
     super(vshader, fshader, {
+      color,
       opacity,
       ambient: ambientIntensity,
       lightDir,
       lightPos
     })
+    if(mainTexture)this.setUniform("mainTexture",mainTexture)
   }
 }

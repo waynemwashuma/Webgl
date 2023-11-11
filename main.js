@@ -108,9 +108,10 @@ let mesh = new Mesh(
   
 )
 let mesh2 = new Mesh(
-  new QuadGeometry(0.5),
+  new UVShereGeometry(3),
   new LambertMaterial({
-    color: new Color(1, 1, 0),
+    mainTexture:tex,
+    color: new Color(1, 1, 1),
     texture: tex,
     tint:1.0,
     lightDir : new Vector3(0,0,-1)
@@ -125,9 +126,9 @@ camera.transform.position.z = 10
 mesh.transform.position.x = 2
 mesh2.transform.position.y = 2
 
-renderer.add(origin)
+//renderer.add(origin)
 //renderer.add(mesh)
-//renderer.add(mesh2)
+renderer.add(mesh2)
 //mesh.parent = origin
 //mesh2.parent = mesh
 
@@ -144,13 +145,13 @@ function render(dt) {
   origin.transform.orientation.multiply(quat1)
   //mesh.transform.orientation.x += Math.PI / 100
   //camera.transform.orientation.z += Math.PI/100
-  /*mesh.material.updateUniform("lightDir",
+  mesh2.material.updateUniform("lightDir",
     new Vector3(
       Math.cos(angle),
       Math.sin(angle),
       Math.sin(angle)
     ).normalize()
-  )*/
+  )
   renderer.update()
   requestAnimationFrame(render)
   angle += Math.PI / 100
