@@ -40,30 +40,35 @@ let fshader =
   
   uniform sampler2D mainTexture;
   uniform vec3 lightDir;
-  uniform float ambient;
+  uniform float ambientIntensity;
+  uniform vec4 ambientColor;
+  uniform float diffuseIntensity;
   uniform float opacity;
   uniform vec4 color;
+  uniform vec4 lightColor;
   
   out vec4 FragColor;
  
  //Remember you set the dir to negative because light direction is the opposite direction of dir.
- float calcBrightness(vec3 normal, mat3 normalMatrix, vec3 dir) {
+ float calcBrightness(vec3 normal, vec3 dir) {
    return max(
-     dot(normalize(normalMatrix * normal), -dir),
+     dot(normalize(normal), -dir),
      0.0
    );
  }
  
  void main(){
-    vec4 fcolor = texture(mainTexture,v_uv) * color ;
-    if(fcolor.xyz == vec3(0.0,0.0,0.0))
-       fcolor = color;
+    vec3 baseColor = texture(mainTexture,v_uv).xyz * color.xyz;
+    if(baseColor == vec3(0.0,0.0,0.0))
+      baseColor = color.xyz;
+    vec3 ambient = ambientColor.xyz * ambientIntensity;
     
-    float brightness = calcBrightness(v_normal,invNormalMat,lightDir);
+    float brightness = calcBrightness(invNormalMat * v_normal,lightDir);
     
-    FragColor = fcolor * ambient + 
-    (1.0 - ambient) * fcolor * brightness;
-    FragColor.a = opacity;
+    vec3 diffuse = lightColor.xyz * brightness * diffuseIntensity;
+    
+    vec3 finalColor = baseColor * (ambient + diffuse);
+    FragColor = vec4(finalColor,opacity);
 }
 `
 
@@ -71,20 +76,24 @@ export class LambertMaterial extends Shader {
   // color = new Color()
   constructor(options) {
     let {
-      color = new Color(1, 1, 1),
-        mainTexture = null,
-        opacity = 1.0,
-        ambientIntensity = 0.0,
-        lightDir = new Vector3(0,0,1),
-        lightPos = new Vector3(0,1,3)
-    } = options
+    mainTexture= null,
+    color= new Color(1, 1, 1),
+    ambientColor=new Color(1,1,1),
+    ambientIntensity = 0.15,
+    opacity= 1.0,
+    lightDir= new Vector3(0, 0, -1),
+    lightColor=new Color(1,1,1),
+    diffuseIntensity=0.65
+  } = options
 
     super(vshader, fshader, {
       color,
+      ambientColor,
+      ambientIntensity,
       opacity,
-      ambient: ambientIntensity,
       lightDir,
-      lightPos
+      lightColor,
+      diffuseIntensity
     })
     if(mainTexture)this.setUniform("mainTexture",mainTexture)
   }

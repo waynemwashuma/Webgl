@@ -47,48 +47,63 @@ let vshader =
   };
   
   uniform mat4 model;
-  //uniform mat4 projection;
-  //uniform mat4 view;
-  
   
   in vec3 position;
   in vec2 uv;
   in vec3 normal;
   
-  uniform vec3 lightDir;
-  uniform vec3 lightPos;
-  
   out vec2 v_uv;
-  out float brightness;
+  out vec3 v_normal;
+  out mat3 invNormalMat;
+  out vec3 lightDirec;
   
-  float calcBrightness(vec3 normal,mat3 normalMatrix,vec3 dir){
-    return max(
-      dot(normalMatrix * normal,dir),
-      0.0
-    );
-  }
   void main(){
     gl_Position = projection * view * model * vec4(position,1.0);
+    invNormalMat = mat3(model);
     v_uv = uv;
-    mat3 invNormalMat = mat3(model);
-    brightness = calcBrightness(normal,invNormalMat,lightDir);
+    v_normal = normal;
   }
 `
 let fshader =
   `#version 300 es
   precision mediump float;
-  uniform sampler2D texture;
-uniform sampler2D texture2;
-
-in float brightness;
-in vec2 v_uv;
-
-uniform float ambient;
-out vec4 FragColor;
-
-void main(){
-vec4 color = FragColor = vec4(1.0,1.0,0.0,1.0);
-  FragColor = vec4(1.0,1.0,0.0,1.0);
+  
+  in float brightness;
+  in vec2 v_uv;
+  in vec3 v_normal;
+  in mat3 invNormalMat;
+  
+  uniform sampler2D mainTexture;
+  uniform vec3 lightDir;
+  uniform float ambientIntensity;
+  uniform vec4 ambientColor;
+  uniform float diffuseIntensity;
+  uniform float opacity;
+  uniform vec4 color;
+  uniform vec4 lightColor;
+  
+  out vec4 FragColor;
+ 
+ //Remember you set the dir to negative because light direction is the opposite direction of dir.
+ float calcBrightness(vec3 normal, vec3 dir) {
+   return max(
+     dot(normalize(normal), -dir),
+     0.0
+   );
+ }
+ 
+ void main(){
+    vec3 baseColor = texture(mainTexture,v_uv).xyz * color.xyz;
+    if(baseColor == vec3(0.0,0.0,0.0))
+      baseColor = color.xyz;
+    vec3 ambient = ambientColor.xyz * ambientIntensity;
+    
+    float brightness = calcBrightness(invNormalMat * v_normal,lightDir);
+    
+    vec3 diffuse = lightColor.xyz * brightness * diffuseIntensity;
+    
+    vec3 finalColor = baseColor * (ambient + diffuse);
+    FragColor = vec4(finalColor,opacity);
 }
 `
 
@@ -103,18 +118,26 @@ let origin = new Mesh(
   })
 )
 let mesh = new Mesh(
-  new UVShereGeometry(0.5),
-  new Shader(vshader,fshader)
-  
+  new UVShereGeometry(5),
+  new Shader(vshader, fshader, {
+    mainTexture: tex,
+    color: new Color(1, 1, 1),
+    ambientColor:new Color(1,1,1),
+    ambientIntensity : 0.15,
+    opacity: 1.0,
+    lightDir: new Vector3(0, 0, -1),
+    lightColor:new Color(1,1,1),
+    diffuseIntensity:0.65
+  })
+
 )
 let mesh2 = new Mesh(
   new UVShereGeometry(3),
   new LambertMaterial({
-    mainTexture:tex,
+    mainTexture: tex,
     color: new Color(1, 1, 1),
-    texture: tex,
-    tint:1.0,
-    lightDir : new Vector3(0,0,-1)
+    tint: 1.0,
+    lightDir: new Vector3(0, 0, -1)
   })
 )
 
@@ -123,17 +146,17 @@ renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
 camera.transform.position.z = 10
-mesh.transform.position.x = 2
+//mesh.transform.position.x = 2
 mesh2.transform.position.y = 2
 
 //renderer.add(origin)
-//renderer.add(mesh)
-renderer.add(mesh2)
+renderer.add(mesh)
+//renderer.add(mesh2)
 //mesh.parent = origin
 //mesh2.parent = mesh
 
 let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI/100, Math.PI/100, 0)
+let euler = new Vector3(Math.PI / 100, Math.PI / 100, 0)
 quat1.setFromEuler(euler)
 
 let angle = 0
@@ -145,13 +168,13 @@ function render(dt) {
   origin.transform.orientation.multiply(quat1)
   //mesh.transform.orientation.x += Math.PI / 100
   //camera.transform.orientation.z += Math.PI/100
-  mesh2.material.updateUniform("lightDir",
+  mesh.material.updateUniform("lightDir",
     new Vector3(
       Math.cos(angle),
       Math.sin(angle),
       Math.sin(angle)
     ).normalize()
-  )
+  )/**/
   renderer.update()
   requestAnimationFrame(render)
   angle += Math.PI / 100
