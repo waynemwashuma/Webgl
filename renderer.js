@@ -7,7 +7,9 @@ export class Renderer {
   meshes = []
   camera = new Camera()
   domElement = null
-
+  /**
+   * @type {WebGL2RenderingContext}
+   */
   gl = null
   dpr = 0
   culling = true
@@ -15,12 +17,10 @@ export class Renderer {
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
     this.dpr = devicePixelRatio
-    /**
-     * @type {WebGL2RenderingContext}
-     */
+    
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
-
+    
     if (this.culling) {
       this.gl.enable(this.gl.CULL_FACE)
       this.gl.cullFace(this.gl.FRONT)
