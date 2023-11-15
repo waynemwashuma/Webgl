@@ -8,7 +8,7 @@ export class QuadGeometry extends Geometry {
     super()
     let indices = new Attribute([
       0, 1, 2,
-      0, 3, 2
+      0, 2, 3
     ], 1)
     let vertices = new Attribute([
       0.5 * w, 0.5 * h, 0,
