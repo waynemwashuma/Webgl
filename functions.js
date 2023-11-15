@@ -355,4 +355,3 @@ export function createUBO(gl, name, point, uniforms) {
 
   return ubo
 }
-UBO.Cache = [];

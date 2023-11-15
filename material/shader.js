@@ -156,7 +156,8 @@ function updateUniform(gl, uniform, texIndex) {
       gl.uniformMatrix4fv(uniform.location, false, arr, 0, 16)
       break
     case UniformTypes.TEXTURE:
-      uniform.value.use(gl, texIndex)
+      gl.activeTexture(gl.TEXTURE0 + texIndex)
+      gl.bindTexture(gl.TEXTURE_2D,val.webglTex)
       gl.uniform1i(uniform.location, texIndex)
       break
   }

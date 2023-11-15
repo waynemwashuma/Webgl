@@ -7,7 +7,7 @@ import {
   ATTR_UV_NAME,
   UniformTypes
 } from "./constants.js"
-
+import {FrameBuffer} from "./framebuffer/framebuffer.js"
 import { Mesh } from "./meshes/mesh.js"
 import {
   Shader,
@@ -108,7 +108,7 @@ let fshader =
     
     vec3 reflectNorm = reflect(lightDir,v_normal);
     float specularBrightness = calcBrightness(reflectNorm,camDirection);
-    vec3 specular = pow(specularBrightness,specularShininess) * diffuseColor.xyz * specularStrength * diffuse;
+    vec3 specular = pow(specularBrightness,specularShininess) * diffuseColor.xyz * specularStrength;
     
     vec3 finalColor = baseColor * (ambient + diffuse + specular );
     FragColor = vec4(finalColor,opacity);
@@ -126,64 +126,69 @@ let origin = new Mesh(
   })
 )
 let mesh = new Mesh(
-  new CylinderGeometry(1),
-  new PhongMaterial({
+  new UVShereGeometry(1,200,50),
+  new Shader(vshader,fshader,{
+    color : new Color(1, 1, 1),
+    opacity : 1.0,
+    lightDir : new Vector3(0, 0, -1),
     mainTexture:tex,
-    ambientIntensity:0.0,
-    specularStrength:0.15,
-    specularShininess:4
-  })
 
-)
-let mesh2 = new Mesh(
-  new UVShereGeometry(3),
-  new LambertMaterial({
-    //mainTexture: tex,
-    color: new Color(1, 1, 1),
-    tint: 1.0,
-    lightDir: new Vector3(0, 0, -1)
+    ambientColor : new Color(1, 1, 1),
+    ambientIntensity : 0.15,
+
+    diffuseColor : new Color(1, 1, 1),
+    diffuseIntensity : 0.65,
+
+    specularStrength :0.15,
+    specularShininess : 16,
   })
 )
-
-renderer.setViewport(300, 300)
 renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
-camera.transform.position.z = 10
-mesh.transform.position.x = 2
-mesh2.transform.position.y = 2
+camera.transform.position.z = 3
+origin.transform.position.x = 2
 
-renderer.add(origin)
+//renderer.add(origin)
 renderer.add(mesh)
-//renderer.add(mesh2)
-//mesh.parent = origin
-//mesh2.parent = mesh
 
 let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI / 1000,Math.PI/1000, 0)
+let euler = new Vector3(Math.PI / 100, 0, 0)
 quat1.setFromEuler(euler)
 
 let angle = 0
+let fb = new FrameBuffer(100,100).init(gl).multiSampleColorBuffer(gl,"bColor",0).texDepthBuffer(gl).finalize(gl)
+let defer = new Mesh(
+  new QuadGeometry(2,2),
+  new Shader(vshader,fshader,{
+    depthT:new Texture(""),
+    colorT: new Texture("")
+  })
+  )
+  defer.init(gl)
+let fb2 = new FrameBuffer(100,100).init(gl).texColorBuffer(gl,"bColor",0).texDepthBuffer(gl).finalize(gl)
 
 function render(dt) {
-  //mesh.transform.position.x = Math.sin(angle)
-  //mesh.transform.position.y = Math.cos(angle)
-  //camera.transform.orientation.multiply(quat1)
   origin.transform.orientation.multiply(quat1)
   mesh.transform.orientation.multiply(quat1)
-  //mesh.transform.orientation.x += Math.PI / 100
-  //camera.transform.orientation.z += Math.PI/100
-  /*mesh.material.updateUniform("lightDir",
-    new Vector3(
-      Math.cos(angle),
-      0,//Math.sin(angle),
-      Math.sin(angle)
-    ).normalize()
-  ) /**/
+  
+  //fb.activate(gl)
   renderer.update()
+  /*fb.deactivate(gl)
+  renderer.clear()
+  defer.material.updateUniform("depthT",{
+    webglTex:fb.depthBuffer
+  })
+  defer.material.updateUniform("colorT", {
+    webglTex: fb.colorBuffers["bcolor"]
+  })
+  defer.update(gl)
+  defer.renderGL(gl)/**/
   requestAnimationFrame(render)
-  angle += Math.PI / 100
+  angle += Math.PI / 1000
 }
 render()
 
-console.log(mesh);
+//console.log(mesh.geometry.attributes);
+
+console.log(fb);

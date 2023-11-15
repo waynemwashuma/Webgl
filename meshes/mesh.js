@@ -15,8 +15,6 @@ export class Mesh {
   }
   init(gl,camera) {
     this.material.setUniform(UNI_MODEL_MAT,this.transform.matrix)
-    this.material.setUniform(UNI_PROJ_MAT,camera.projection)
-    this.material.setUniform(UNI_CAM_MAT,camera.transform.matrix)
     this.material.init(gl)
     this.geometry.init(gl,this.material.program)
   }
@@ -37,9 +35,6 @@ export class Mesh {
     material.activate(gl)
     gl.bindVertexArray(this.geometry.VAO)
     material.updateUniform(UNI_MODEL_MAT,this.transform.matrix)
-    material.updateUniform(UNI_PROJ_MAT,projection)
-    material.updateUniform(UNI_CAM_MAT,view)
-    
     //drawing
     if (attributes.indices) {
       gl.drawElements(drawMode,

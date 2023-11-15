@@ -1,5 +1,10 @@
 export class FrameBuffer {
   initResize = true
+  colorattachment = 0
+  colorBuffers = {}
+  aryDrawBuf = []
+  enabledepthbuffer = true
+  colorbufferno = 0
   constructor(width, height) {
     this.width = width
     this.height = height
@@ -7,43 +12,87 @@ export class FrameBuffer {
   /**
    * @param {WebGL2RenderingContext} gl
    */
-  createColorBuffer(gl, attachmentIndex) {
-    this.colorBuffer = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, this.colorBuffer);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //Stretch image to X position
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //Stretch image to Y position
-
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentIndex, gl.TEXTURE_2D, this.colorBuffer, 0);
-  }
-  /**
-   * @param {WebGL2RenderingContext} gl
-   */
-  depthBuffer(gl) {
-    this.depth = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, this.depth);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.idth, this.height);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depth);
-    return this;
-  }
-  /**
-   * @param {WebGL2RenderingContext} gl
-   */
   init(gl) {
-    this.buffer = createFrameBuffer(gl)
-    
-    if(this.initResize){
+    this.buffer = gl.createFramebuffer()
+    if (this.initResize) {
       this.width = gl.canvas.width
       this.height = gl.canvas.height
     }
-    
-    
+    return this
+  }
+  finalize(gl){
+    gl.drawBuffers(this.aryDrawBuf);
     validateFrameBuffer(gl)
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindTexture(gl.TEXTURE_2D, null)
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null)
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    return this
+  }
+
+  texColorBuffer(gl, name, colorIndex) {
+    var texture =gl.createTexture()
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); //NEAREST
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + colorIndex, gl.TEXTURE_2D, texture, 0);
+
+    //Save Attachment to enable on finalize
+    this.aryDrawBuf.push(gl.COLOR_ATTACHMENT0 + colorIndex);
+    this.colorBuffers[name] = texture;
+    return this;
+  }
+
+  multiSampleColorBuffer(gl,name, colorIndex, sampleSize = 4) {
+    var buf = gl.createRenderbuffer()
+
+    gl.bindRenderbuffer(gl.RENDERBUFFER, buf);
+
+    //Set Data Size
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, sampleSize, gl.RGBA8, this.width, this.height);
+
+    //Bind buf to color attachment
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + colorIndex, gl.RENDERBUFFER, buf);
+
+    //Save Attachment to enable on finalize
+    this.aryDrawBuf.push(gl.COLOR_ATTACHMENT0 + colorIndex);
+    this.colorBuffers[name] = buf;
+    return this;
+  }
+  
+  depthBuffer(isMultiSample = false) {
+    this.depthBuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
+
+    if (!isMultiSample) {
+      gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16,
+        this.width, this.height);
+    } else {
+      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4,
+        gl.DEPTH_COMPONENT16,
+        this.width, this.height);
+    }
+    
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
+    return this;
+  }
+
+  texDepthBuffer(gl) {
+    let texture =  gl.createTexture()
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texStorage2D(gl.TEXTURE_2D, 1, gl.DEPTH_COMPONENT16, this.width, this.height);
+
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, texture, 0);
+
+    this.depthBuffer = texture
+    return this;
   }
   /**
    * @param {WebGL2RenderingContext} gl
@@ -59,12 +108,12 @@ export class FrameBuffer {
   }
   readPixels(gl, x, y) {
     var p = new Uint8Array(4);
-    gl.bindFramebuffer(gl.FRAMEBUFFER,this.buffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffer);
     gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, p);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     return p;
   }
-  clear(gl){
+  clear(gl) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffer);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -75,14 +124,8 @@ export class FrameBuffer {
     gl.deleteFramebuffer(this.id);
   }
 }
-/**
- * @param {WebGL2RenderingContext} gl
- */
-function createFrameBuffer(gl) {
-  let buffer = gl.createFramebuffer()
 
-}
-function validateFrameBuffer(gl){
+function validateFrameBuffer(gl) {
   switch (gl.checkFramebufferStatus(gl.FRAMEBUFFER)) {
     case gl.FRAMEBUFFER_COMPLETE:
       break;
