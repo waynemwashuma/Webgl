@@ -39,7 +39,7 @@ export const {
 export class Shader {
   drawMode = DrawModes.TRIANGLES
   cullFace = CullFace.FRONT
-  distBlendFunc = BlendEquations.ONE_MINUS_SRC_ALPHA
+  distBlendFunc = BlendEquations.ONE_MINUS_SRC
   srcBlendFunc = BlendEquations.SRC
   /**
    * @param {string} vshaderSrc

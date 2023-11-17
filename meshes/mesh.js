@@ -31,7 +31,7 @@ export class Mesh {
     let attributes = geometry.attributes
     let drawMode = material.drawMode
     
-    //gl.blendFunc(material.srcBlendFunc,material.distBlendFunc)
+    gl.blendFunc(material.srcBlendFunc,material.distBlendFunc)
     //preping uniforms and activating program
     material.activate(gl)
     gl.bindVertexArray(this.geometry.VAO)
