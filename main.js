@@ -82,8 +82,8 @@ let origin = new Mesh(
   })
 )
 let mesh = new Mesh(
-  new UVShereGeometry(1, 200, 50),
-  new LambertMaterial({
+  new UVShereGeometry(1.5, 200, 50),
+  new PhongMaterial({
     color: new Color(1, 1, 1),
     opacity: 1.0,
     lightDir: new Vector3(0, 0, -1),
@@ -96,7 +96,7 @@ let mesh = new Mesh(
     diffuseIntensity: 0.65,
 
     specularStrength: 0.15,
-    specularShininess: 32,
+    specularShininess: 16,
   })
 )
 renderer.setViewport(innerWidth, innerHeight)
@@ -123,30 +123,30 @@ let defer = new Mesh(
 )
 defer.init(gl)
 
-let fb = new FrameBuffer(100, 100).init(gl).multiSampleColorBuffer(gl, "bColor", 0).depthBuffer(gl,true).finalize(gl)
+let fb = new FrameBuffer(100, 100).init(gl).multiSampleColorBuffer(gl, "bColor", 0).depthBuffer(gl, true).finalize(gl)
 
-let fb2 = new FrameBuffer(100, 100).init(gl).texColorBuffer(gl, "bColor", 0).texDepthBuffer(gl).finalize(gl)
 
+let fb2 = new FrameBuffer(100, 100).init(gl).texColorBuffer(gl, "bColor", 0).finalize(gl)
+
+let fbo = gl.createFramebuffer()
 function render(dt) {
   origin.transform.orientation.multiply(quat1)
   mesh.transform.orientation.multiply(quat1)
   renderer.clear()
+  
   fb.activate(gl)
-  fb.clear(gl)
   renderer.update()
   fb.deactivate(gl)
-  
   fb2.copy(gl,fb)
-  defer.material.updateUniform("depthT",{
-    webglTex:fb2.depthBuffer
-  })
   defer.material.updateUniform("colorT", {
     webglTex: fb2.colorBuffers["bColor"]
   })
+  
   defer.update(gl)
-  //defer.renderGL(gl)/**/
+  defer.renderGL(gl) /**/
   requestAnimationFrame(render)
   angle += Math.PI / 1000
+
 }
 render()
 

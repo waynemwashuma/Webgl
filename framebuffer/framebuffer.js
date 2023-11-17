@@ -14,6 +14,7 @@ export class FrameBuffer {
    */
   init(gl) {
     this.buffer = gl.createFramebuffer()
+    gl.bindFramebuffer(gl.FRAMEBUFFER,this.buffer)
     if (this.initResize) {
       this.width = gl.canvas.width
       this.height = gl.canvas.height
@@ -53,12 +54,11 @@ export class FrameBuffer {
    * @param {WebGL2RenderingContext} gl
    */
   multiSampleColorBuffer(gl, name, colorIndex, sampleSize = 4) {
-    var buf = gl.createRenderbuffer()
+    let buf = gl.createRenderbuffer()
 
     gl.bindRenderbuffer(gl.RENDERBUFFER, buf);
 
     gl.renderbufferStorageMultisample(gl.RENDERBUFFER, sampleSize, gl.RGBA8, this.width, this.height);
-
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + colorIndex, gl.RENDERBUFFER, buf);
 
     this.aryDrawBuf.push(gl.COLOR_ATTACHMENT0 + colorIndex);
@@ -82,6 +82,7 @@ export class FrameBuffer {
     }
 
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
+    gl.bindRenderbuffer(gl.RENDERBUFFER,null)
     return this;
   }
   /**
