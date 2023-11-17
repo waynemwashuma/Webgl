@@ -6,7 +6,8 @@ import {
   UNI_CAM_MAT,
   UNI_PROJ_MAT,
   UNI_MODEL_MAT,
-  UniformTypes
+  UniformTypes,
+  BlendEquations
 } from "../constants.js"
 
 export const {
@@ -38,6 +39,8 @@ export const {
 export class Shader {
   drawMode = DrawModes.TRIANGLES
   cullFace = CullFace.FRONT
+  distBlendFunc = BlendEquations.ONE_MINUS_SRC_ALPHA
+  srcBlendFunc = BlendEquations.SRC
   /**
    * @param {string} vshaderSrc
    * @param {string} fshaderSrc

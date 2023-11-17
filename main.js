@@ -5,7 +5,8 @@ import {
   ATTR_POSITION_NAME,
   ATTR_NORMAL_NAME,
   ATTR_UV_NAME,
-  UniformTypes
+  UniformTypes,
+  CullFace
 } from "./constants.js"
 import { FrameBuffer } from "./framebuffer/framebuffer.js"
 import { Mesh } from "./meshes/mesh.js"
@@ -75,17 +76,28 @@ let tex = new Texture("./UV_Grid_Lrg.jpg")
 let tex2 = new Texture("./texture.png")
 
 let origin = new Mesh(
-  new CylinderGeometry(1, 1),
-  new BasicMaterial({
+  new BoxGeometry(1, 1, 1),
+  new PhongMaterial({
     color: new Color(1, 1, 1),
-    texture: tex,
+    opacity: 1,
+    lightDir: new Vector3(0, 0, -1),
+    mainTexture: tex,
+
+    ambientColor: new Color(1, 1, 1),
+    ambientIntensity: 0.15,
+
+    diffuseColor: new Color(1, 1, 1),
+    diffuseIntensity: 0.65,
+
+    specularStrength: 0.15,
+    specularShininess: 16,
   })
 )
 let mesh = new Mesh(
   new UVShereGeometry(1.5, 200, 50),
-  new PhongMaterial({
+  new LambertMaterial({
     color: new Color(1, 1, 1),
-    opacity: 1.0,
+    opacity: 0.1,
     lightDir: new Vector3(0, 0, -1),
     mainTexture: tex,
 
@@ -103,9 +115,11 @@ renderer.setViewport(innerWidth, innerHeight)
 
 camera.makePerspective(120)
 camera.transform.position.z = 3
-origin.transform.position.x = 2
 
-//renderer.add(origin)
+//origin.material.cullFace = CullFace.BACK
+//console.log(gl.getError());
+
+renderer.add(origin)
 renderer.add(mesh)
 
 let quat1 = new Quaternion()
@@ -115,7 +129,7 @@ quat1.setFromEuler(euler)
 let angle = 0
 
 let defer = new Mesh(
-  new QuadGeometry(1, 1),
+  new QuadGeometry(2, 2),
   new Shader(vshader, fshader, {
     depthT: new Texture(""),
     colorT: new Texture("")
@@ -134,16 +148,16 @@ function render(dt) {
   mesh.transform.orientation.multiply(quat1)
   renderer.clear()
   
-  fb.activate(gl)
+  //fb.activate(gl)
   renderer.update()
-  fb.deactivate(gl)
+  //fb.deactivate(gl)
   fb2.copy(gl,fb)
   defer.material.updateUniform("colorT", {
     webglTex: fb2.colorBuffers["bColor"]
   })
   
-  defer.update(gl)
-  defer.renderGL(gl) /**/
+  //defer.update(gl)
+  //defer.renderGL(gl) /**/
   requestAnimationFrame(render)
   angle += Math.PI / 1000
 

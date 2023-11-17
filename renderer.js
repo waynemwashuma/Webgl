@@ -14,6 +14,7 @@ export class Renderer {
   dpr = 0
   culling = true
   depthTest = true
+  alphaBlending = true
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
     this.dpr = devicePixelRatio
@@ -27,6 +28,10 @@ export class Renderer {
     }
     if (this.depthTest) {
       this.gl.enable(this.gl.DEPTH_TEST)
+    }
+    if (this.alphaBlending) {
+      this.gl.enable(this.gl.BLEND)
+      this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA)
     }
     this.setGlobalUBO("camera", {
       "view": this.camera.view,
