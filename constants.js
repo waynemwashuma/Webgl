@@ -11,14 +11,24 @@ export const UNI_MODEL_MAT = "model"
 export const UniformTypes = {
   BOOL: 0,
   FLOAT: 1,
-  //INT : 2,
+  INT: 2,
   VEC2: 3,
   VEC3: 4,
   VEC4: 5,
   MAT2: 6,
   MAT3: 7,
   MAT4: 8,
-  TEXTURE: 9
+  TEXTURE: 9,
+  ARR_FLOAT: 10,
+  ARR_INT: 11,
+  ARR_VEC2: 12,
+  ARR_VEC3: 13,
+  ARR_VEC4: 14,
+  ARR_MAT2: 15,
+  ARR_MAT3: 16,
+  ARR_MAT4: 17,
+  ARR_BOOL:18,
+  STRUCT: 19
 }
 
 export const {

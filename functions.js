@@ -200,14 +200,54 @@ export function getUniformLoc(gl, program, name) {
   return gl.getUniformLocation(program, name)
 }
 
+export function sizeofUniform(uniform) {
+  const type = uniform.type
+  switch (type) {
+    case UniformTypes.INT:
+    case UniformTypes.FLOAT:
+    case UniformTypes.BOOL:
+    case UniformTypes.TEXTURE:
+      return 1
+    case UniformTypes.MAT4:
+      return 16
+    case UniformTypes.MAT3:
+      return 9
+    case UniformTypes.VEC2:
+      return 2
+    case UniformTypes.VEC3:
+      return 3 //Special Case
+    case UniformTypes.VEC4:
+    case UniformTypes.MAT2:
+      return 4
+    case UniformTypes.ARR_FLOAT:
+      return uniform.value.length
+    case UniformTypes.ARR_FLOAT:
+    case UniformTypes.ARR_BOOL:
+    case UniformTypes.ARR_INT:
+      return uniform.value.length
+    case UniformTypes.ARR_VEC2:
+      return uniform.value.length * 2
+    case UniformTypes.ARR_VEC3:
+      return uniform.value.length * 3
+    case UniformTypes.ARR_VEC4:
+    case UniformTypes.ARR_MAT2:
+      return uniform.value.length * 4
+    case UniformTypes.ARR_MAT3:
+      return uniform.value.length * 9
+    case UniformTypes.ARR_MAT4:
+      return uniform.value.length * 16
+    default:
+      return 0
+  }
+}
 export function typeOfUniform(uniform) {
-  if(uniform === void 0) return -1
+  if (uniform === void 0) return -1
   let name = uniform.constructor.name.toLowerCase()
   let type = typeof uniform
 
   if (type == "boolean")
     return UniformTypes.BOOL
-  if (type == "number") 
+  if (type == "number")
     return UniformTypes.FLOAT
   if (type == "object") {
     if (name === "vec2")
@@ -224,10 +264,40 @@ export function typeOfUniform(uniform) {
       return UniformTypes.MAT4
     if (name === "texture")
       return UniformTypes.TEXTURE
+    if (name === "array") {
+      let eltype = typeOfUniform(uniform[0])
+      return convertToArrUniType(eltype)
+    }
+    return UniformTypes.ARR
+    if (name === "object")
+      return UniformTypes.STRUCT
+    //Todo : add UBO for objects here
   }
-  throw "Unsupported type of a uniform value  \'" + name + "\'";
+  throw "Unsupported type of uniform value  \'" + name + "\'";
 }
 
+function convertToArrUniType(type) {
+  switch (type) {
+    case UniformTypes.INT:
+      return UniformTypes.ARR_INT
+    case UniformTypes.FLOAT:
+      return UniformTypes.ARR_FLOAT
+    case UniformTypes.BOOL:
+      return UniformTypes.ARR_BOOL
+    case UniformTypes.MAT4:
+      return UniformTypes.ARR_MAT4
+    case UniformTypes.MAT3:
+      return UniformTypes.ARR_MAT3
+    case UniformTypes.VEC2:
+      return UniformTypes.ARR_VEC2
+    case UniformTypes.VEC3:
+      return UniformTypes.ARR_VEC3
+    case UniformTypes.VEC4:
+      return UniformTypes.ARR_VEC4
+    default:
+      return 0
+  }
+}
 /**
  * @param {WebGL2RenderingContext} gl
  */
@@ -351,7 +421,6 @@ export class UBO {
 export function createUBO(gl, name, point, uniforms) {
   var [data, bufSize] = UBO.calculate(uniforms);
   let ubo = new UBO(gl, name, point, bufSize, data);
-  UBO.debugVisualize(ubo);
 
   return ubo
 }

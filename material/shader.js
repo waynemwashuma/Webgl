@@ -1,6 +1,7 @@
 import {
   createProgramFromSrc,
-  typeOfUniform
+  typeOfUniform,
+  sizeofUniform
 } from "../functions.js"
 import {
   UNI_CAM_MAT,
@@ -64,13 +65,14 @@ export class Shader {
     for (let name in this.uniforms) {
       let uniform = this.uniforms[name]
       uniform.type = typeOfUniform(
-        this.uniforms[name].value
+        uniform.value
       )
+      uniform.size = sizeofUniform(uniform)
       if (uniform.type === UniformTypes.TEXTURE)
         uniform.value.init(gl)
       //TODO - warn if location is null.
       uniform.location = gl.getUniformLocation(this.program, name)
-
+      console.log(name,uniform.location);
     }
   }
   /**
@@ -108,7 +110,8 @@ export class Shader {
     this.uniforms[name] = {
       value,
       type: 0,
-      location: null
+      location: null,
+      size: 0
     }
   }
   updateUniform(name, value) {
@@ -120,9 +123,9 @@ export class Shader {
 /**
  * @param {WebGL2RenderingContext} gl
  */
-function updateUniform(gl, uniform, texIndex) {
-  let val = uniform.value
-  let arr = new Float32Array(16)
+function updateUniform(gl, uniform, offset) {
+  const val = uniform.value
+  const arr = new Float32Array(uniform.size)
   switch (uniform.type) {
     case UniformTypes.BOOL:
       gl.uniform1f(uniform.location, uniform.value)
@@ -138,9 +141,44 @@ function updateUniform(gl, uniform, texIndex) {
       gl.uniform2fv(uniform.location, arr, 0, 2)
       break
     case UniformTypes.VEC3:
-
       uniform.value.toArray(arr)
       gl.uniform3fv(uniform.location, arr, 0, 3)
+      break
+    case UniformTypes.ARR_VEC2:
+      for (var i = 0; i < val.length; i++) {
+        val[i].toArray(arr, i * 2)
+      }
+      gl.uniform2fv(uniform.location, arr, 0, 2)
+      break
+    case UniformTypes.ARR_VEC3:
+      for (var i = 0; i < val.length; i++) {
+        val[i].toArray(arr, i * 3)
+      }
+      gl.uniform3fv(uniform.location, arr)
+      break
+    case UniformTypes.ARR_VEC4:
+      for (var i = 0; i < val.length; i++) {
+        val[i].toArray(arr, i * 4)
+      }
+      gl.uniform4fv(uniform.location, arr)
+      break
+    case UniformTypes.ARR_MAT2:
+      for (var i = 0; i < val.length; i++) {
+        val[i].toArray(arr, i * 4)
+      }
+      gl.uniformMatrix2fv(uniform.location, false, arr)
+      break
+    case UniformTypes.ARR_MAT2:
+      for (var i = 0; i < val.length; i++) {
+        val[i].toArray(arr, i * 4)
+      }
+      gl.uniformMatrix2fv(uniform.location, false, arr)
+      break
+    case UniformTypes.ARR_MAT2:
+      for (var i = 0; i < val.length; i++) {
+        val[i].toArray(arr, i * 4)
+      }
+      gl.uniformMatrix4fv(uniform.location, false, arr)
       break
     case UniformTypes.VEC4:
       uniform.value.toArray(arr)
@@ -159,9 +197,15 @@ function updateUniform(gl, uniform, texIndex) {
       gl.uniformMatrix4fv(uniform.location, false, arr, 0, 16)
       break
     case UniformTypes.TEXTURE:
-      gl.activeTexture(gl.TEXTURE0 + texIndex)
-      gl.bindTexture(gl.TEXTURE_2D,val.webglTex)
-      gl.uniform1i(uniform.location, texIndex)
+      gl.activeTexture(gl.TEXTURE0 + offset)
+      gl.bindTexture(gl.TEXTURE_2D, val.webglTex)
+      gl.uniform1i(uniform.location, offset)
+      break
+    case UniformTypes.ARR_FLOAT:
+    case UniformTypes.ARR_BOOL:
+
+
+
       break
   }
 }
