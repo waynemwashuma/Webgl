@@ -162,7 +162,7 @@ let origin = new Mesh(
   })
 )
 let mesh = new Mesh(
-  new CylinderGeometry(1, 1),
+  new UVShereGeometry(1),
   new Shader(vshader2, fshader2, {
     mainTexture: tex
   })
@@ -186,7 +186,8 @@ let angle = 0
 let fb = new FrameBuffer(100, 100).init(gl).multiSampleColorBuffer(gl, "color", 0).depthBuffer(gl, true).finalize(gl)
 
 
-let fb2 = new FrameBuffer(100, 100).init(gl).texColorBuffer(gl, "color", 0).texColorBuffer(gl, "normal", 1).texColorBuffer(gl, "position", 2).texColorBuffer(gl, "emission", 3).texDepthBuffer(gl, false).finalize(gl)
+let fb2 = new FrameBuffer(100, 100).init(gl).texColorBuffer(gl, "color", 0).texColorBuffer(gl, "position", 1,).texColorBuffer(gl, "normal", 2).texColorBuffer(gl, "emission", 3).texDepthBuffer(gl, false).finalize(gl)
+console.log(gl.getError());
 let colorTex = new Texture()
 let normalTex = new Texture()
 let positionTex = new Texture()

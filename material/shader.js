@@ -72,7 +72,6 @@ export class Shader {
         uniform.value.init(gl)
       //TODO - warn if location is null.
       uniform.location = gl.getUniformLocation(this.program, name)
-      console.log(name,uniform.location);
     }
   }
   /**
