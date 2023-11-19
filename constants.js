@@ -54,6 +54,21 @@ export const {
         DST: gl.DST_ALPHA,
         ONE_MINUS_SRC: gl.ONE_MINUS_SRC_ALPHA,
         ONE_MINUS_DIST: gl.ONE_MINUS_DST_ALPHA
+      },
+      DonnoRightNow: {
+        FLOAT: gl.FLOAT,
+        SHORT: gl.SHORT,
+        BYTE: gl.BYTE
+      },
+      Rgba: {
+        RGBA: gl.RGBA,
+        RGBA8F: gl.RGBA8F,
+        RGBA16F: gl.RGBA16F,
+        RGBA32F: gl.RGBA32F,
+        RGBA8I: gl.RGBA8I,
+        RGBA16I: gl.RGBA16I,
+        RGBA32I: gl.RGBA32I,
+
       }
     }
   })()

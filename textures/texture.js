@@ -14,6 +14,7 @@ export class Texture {
    * @param {WebGLRenderingContext} gl
    */
   init(gl) {
+    if(this.webglTex) return
     let texture = loadTexture(gl, this.src)
     this.webglTex = texture
   }
