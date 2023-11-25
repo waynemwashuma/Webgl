@@ -126,13 +126,25 @@ let fshader2 = `#version 300 es
   in vec4 v_position;
   
   uniform sampler2D mainTexture;
+  uniform camera {
+    mat4 view;
+    mat4 projection;
+  };
   
   layout(location=0) out vec4 color;
   layout(location=1) out vec4 position;
   layout(location=2) out vec4 normal;
   layout(location=3) out vec4 emission;
   layout(location=4) out vec4 albedo;
-
+  layout(location=5) out vec4 specular;
+  
+  float calcBrightness(vec3 normal, vec3 dir) {
+    return max(
+      dot(normalize(normal), -dir),
+      0.0
+    );
+  }
+  
   void main(){
     normal = vec4(v_normal,1.0);
     color = texture(mainTexture,v_uv);
@@ -176,7 +188,7 @@ camera.transform.position.z = 2
 renderer.add(mesh)
 
 let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI / 100, 0, 0)
+let euler = new Vector3(Math.PI / 1000, 0, 0)
 quat1.setFromEuler(euler)
 
 let angle = 0
@@ -185,9 +197,15 @@ let angle = 0
 
 let fb = new FrameBuffer(100, 100).init(gl).multiSampleColorBuffer(gl, "color", 0).depthBuffer(gl, true).finalize(gl)
 
-
-let fb2 = new FrameBuffer(100, 100).init(gl).texColorBuffer(gl, "color", 0).texColorBuffer(gl, "position", 1,).texColorBuffer(gl, "normal", 2).texColorBuffer(gl, "emission", 3).texDepthBuffer(gl, false).finalize(gl)
-console.log(gl.getError());
+let ext = gl.getExtension("EXT_color_buffer_float")
+let fb2 = new FrameBuffer(100, 100).init(gl)
+  .texColorBuffer(gl, "color", 0)
+  .texColorBuffer(gl, "position", 1, gl.RGBA16F, gl.FLOAT)
+  .texColorBuffer(gl, "normal", 2)
+  .texColorBuffer(gl, "emission", 3)
+  .texColorBuffer(gl, "specular", 4)
+  .texDepthBuffer(gl, false).finalize(gl)
+//console.log(gl.getError());
 let colorTex = new Texture()
 let normalTex = new Texture()
 let positionTex = new Texture()
@@ -201,10 +219,10 @@ let defer = new Mesh(
     normalT: normalTex,
     positionT: positionTex,
     emissionT: emissionTex,
-    depthT:depthTex,
-    lightDir:[new Vector3(0,-1,0)],
-    lightColor:[new Color(1,1,1)],
-    diffuseIntensity:1
+    depthT: depthTex,
+    lightDir: [new Vector3(0, 0.8660, -0.5)],
+    lightColor: [new Color(1, 1, 1)],
+    diffuseIntensity: 1
   })
 )
 
@@ -235,5 +253,4 @@ function render(dt) {
 render()
 
 //console.log(mesh.geometry.attributes);
-
-console.log(defer)
+//console.log(fb2)

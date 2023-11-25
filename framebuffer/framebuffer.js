@@ -1,10 +1,14 @@
 export class FrameBuffer {
+  _to = null
+  _from = null
   initResize = true
   colorattachment = 0
   colorBuffers = {}
   aryDrawBuf = []
   enabledepthbuffer = true
   colorbufferno = 0
+  width = 0
+  height = 0
   constructor(width, height) {
     this.width = width
     this.height = height
@@ -14,7 +18,7 @@ export class FrameBuffer {
    */
   init(gl) {
     this.buffer = gl.createFramebuffer()
-    gl.bindFramebuffer(gl.FRAMEBUFFER,this.buffer)
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffer)
     if (this.initResize) {
       this.width = gl.canvas.width
       this.height = gl.canvas.height
@@ -44,9 +48,11 @@ export class FrameBuffer {
     var texture = gl.createTexture()
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0,format, this.width, this.height, 0, gl.RGBA, type, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); //NEAREST
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, format, this.width, this.height, 0, gl.RGBA, type, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + colorIndex, gl.TEXTURE_2D, texture, 0);
 
@@ -87,7 +93,7 @@ export class FrameBuffer {
     }
 
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
-    gl.bindRenderbuffer(gl.RENDERBUFFER,null)
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null)
     return this;
   }
   /**
@@ -141,6 +147,9 @@ export class FrameBuffer {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
   }
+  update(gl){
+    
+  }
   /**
    * @param {WebGL2RenderingContext} gl
    */
@@ -157,6 +166,16 @@ export class FrameBuffer {
 
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  }
+  
+  pipeTo(framebuffer,from = true){
+    this._to = framebuffer
+    if(from)framebuffer.pipeFrom(this,false)
+    
+  }
+  pipeFrom(framebuffer,to = true){
+    this._from = framebuffer
+    if(to)this.pipeTo(this,false)
   }
   /**
    * @param {WebGL2RenderingContext} gl
