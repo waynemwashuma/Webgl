@@ -157,20 +157,8 @@ let tex2 = new Texture("./texture.png")
 
 let origin = new Mesh(
   new BoxGeometry(1, 1, 1),
-  new PhongMaterial({
-    color: new Color(1, 1, 1),
-    opacity: 1,
-    lightDir: new Vector3(0, 0, -1),
-    mainTexture: tex,
-
-    ambientColor: new Color(1, 1, 1),
-    ambientIntensity: 0.15,
-
-    diffuseColor: new Color(1, 1, 1),
-    diffuseIntensity: 0.65,
-
-    specularStrength: 0.15,
-    specularShininess: 16,
+  new Shader(vshader2, fshader2, {
+    mainTexture: tex
   })
 )
 let mesh = new Mesh(
@@ -184,8 +172,8 @@ renderer.setViewport(innerWidth, innerHeight)
 camera.makePerspective(120)
 camera.transform.position.z = 2
 
-//renderer.add(origin)
-renderer.add(mesh)
+renderer.add(origin)
+//renderer.add(mesh)
 
 let quat1 = new Quaternion()
 let euler = new Vector3(Math.PI / 1000, 0, 0)
