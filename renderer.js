@@ -1,6 +1,6 @@
 import { Camera } from "./camera.js"
 import { createUBO } from "./functions.js"
-import { WebGLDebugUtils } from "./webgl-debug.js"
+
 export class Renderer {
   _ubocounter = 0
   _UBOs = {}
@@ -19,12 +19,7 @@ export class Renderer {
     this.domElement = canvas || document.createElement("canvas")
     this.dpr = devicePixelRatio
     
-    
-    //remove debug context later
-    this.gl = WebGLDebugUtils.makeDebugContext(canvas.getContext("webgl2"))
-    this.gl.getExtension("WEBGL_debug_renderer_info")
-    this.gl.getExtension("WEBGL_debug_shaders")
-    this.gl.getExtension("WEBGL_debug_textures")
+    this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
     
     if (this.culling) {

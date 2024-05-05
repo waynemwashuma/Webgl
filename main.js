@@ -163,10 +163,9 @@ let origin = new Mesh(
 )
 let mesh = new Mesh(
   new UVShereGeometry(1),
-  new BasicMaterial()
-  /*new Shader(vshader2, fshader2, {
+  new Shader(vshader2, fshader2, {
     mainTexture: tex
-  })*/
+  })
 )
 renderer.setViewport(innerWidth, innerHeight)
 
@@ -222,18 +221,20 @@ positionTex.webglTex = fb2.colorBuffers["position"]
 depthTex.webglTex = fb2.depthBuffer
 
 defer.init(gl)
+
 function render(dt) {
   origin.transform.orientation.multiply(quat1)
   mesh.transform.orientation.multiply(quat1)
   renderer.clear()
 
-  //fb2.activate(gl)
+  fb2.activate(gl)
   renderer.update()
-  //fb2.deactivate(gl)
+  fb2.deactivate(gl)
   //fb2.copy(gl,fb)
 
+  //console.log(gl.getError());
   defer.renderGL(gl)
-  //requestAnimationFrame(render)
+  requestAnimationFrame(render)
   angle += Math.PI / 1000
 
 }
