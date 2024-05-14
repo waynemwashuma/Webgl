@@ -40,117 +40,10 @@ let camera = renderer.camera
  * @type {WebGL2RenderingContext}
  */
 let gl = renderer.gl
-let vshader =
-  `#version 300 es
-  precision mediump float;
-  
-  in vec3 position;
-  in vec2 uv;
-  in vec3 normal;
-  
-  out vec2 v_uv;
-  
-  void main(){
-    gl_Position = vec4(position,1.0);
-    v_uv = uv;
-  }
-`
-let fshader =
-  `#version 300 es
-  precision mediump float;
-  
-  in vec2 v_uv;
-  
-  uniform sampler2D colorT;
-  uniform sampler2D normalT;
-  uniform vec3 lightDir[1];
-  uniform vec4 lightColor[1];
-  uniform float diffuseIntensity;
-  
-  out vec4 color;
-  
-  float calcBrightness(vec3 normal, vec3 dir) {
-    return max(
-      dot(normalize(normal), -dir),
-      0.0
-    );
-  }
-  
-  void main(){
-    vec3 initialColor = texture(colorT,v_uv).xyz;
-    vec3 normal = texture(normalT,v_uv).xyz;
-    
-    
-    float diffusebrightness = calcBrightness(normal,lightDir[0]);
-    vec3 diffuse = lightColor[0].xyz * diffusebrightness * diffuseIntensity;
-    
-    vec3 finalColor = initialColor * (diffuse);
-    
-    //color = vec4(diffuse * initialColor,1.0);
-    color = vec4(finalColor,1.0);
-}
-`
-let vshader2 = `#version 300 es
-  precision mediump float;
-  
-  uniform camera {
-    mat4 view;
-    mat4 projection;
-  };
-  
-  uniform mat4 model;
-  
-  in vec3 position;
-  in vec2 uv;
-  in vec3 normal;
-  
-  out vec2 v_uv;
-  out vec3 v_normal;
-  out vec4 v_position;
-  
-  void main(){
-    gl_Position = projection * view * model * vec4(position,1.0);
-    v_uv = uv;
-    
-    mat3 invNormalMat = mat3(model);
-    v_uv = uv;
-    v_normal = normalize(invNormalMat * normal);
-    v_position = gl_Position;
-  }
-`
-let fshader2 = `#version 300 es
-  precision mediump float;
-  
-  in vec2 v_uv;
-  in vec3 v_normal;
-  in vec4 v_position;
-  
-  uniform sampler2D mainTexture;
-  uniform camera {
-    mat4 view;
-    mat4 projection;
-  };
-  
-  layout(location=0) out vec4 color;
-  layout(location=1) out vec4 position;
-  layout(location=2) out vec4 normal;
-  layout(location=3) out vec4 emission;
-  layout(location=4) out vec4 albedo;
-  layout(location=5) out vec4 specular;
-  
-  float calcBrightness(vec3 normal, vec3 dir) {
-    return max(
-      dot(normalize(normal), -dir),
-      0.0
-    );
-  }
-  
-  void main(){
-    normal = vec4(v_normal,1.0);
-    color = texture(mainTexture,v_uv);
-    position = v_position;
-  }
-`
+const vshader = await fetch("./shaders/deferlighting/vdefer.glsl").then(e=>e.text())
+const fshader = await fetch("./shaders/deferlighting/fdefer.glsl").then(e=>e.text())
+const vshader2 = await fetch("./shaders/deferlighting/vdefault.glsl").then(e=>e.text())
+const fshader2 = await fetch("./shaders/deferlighting/fdefault.glsl").then(e=>e.text())
 
 let tex = new Texture("./UV_Grid_Lrg.jpg")
 let tex2 = new Texture("./texture.png")
@@ -176,14 +69,13 @@ renderer.add(origin)
 //renderer.add(mesh)
 
 let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI / 1000, 0, 0)
+let euler = new Vector3(Math.PI / 1000, Math.PI / 1000, 0)
 quat1.setFromEuler(euler)
 
 let angle = 0
 
 
 
-let fb = new FrameBuffer(100, 100).init(gl).multiSampleColorBuffer(gl, "color", 0).depthBuffer(gl, true).finalize(gl)
 
 let ext = gl.getExtension("EXT_color_buffer_float")
 let fb2 = new FrameBuffer(100, 100).init(gl)
@@ -193,7 +85,6 @@ let fb2 = new FrameBuffer(100, 100).init(gl)
   .texColorBuffer(gl, "emission", 3)
   .texColorBuffer(gl, "specular", 4)
   .texDepthBuffer(gl, false).finalize(gl)
-//console.log(gl.getError());
 let colorTex = new Texture()
 let normalTex = new Texture()
 let positionTex = new Texture()
