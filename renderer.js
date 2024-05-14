@@ -76,8 +76,12 @@ export class Renderer {
     let id = this.meshes.indexOf(mesh)
     this.meshes.splice(id, 1)
   }
-  clear() {
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
+  clear(color = true,depth = true,stencil = true) {
+    let bit = 0
+    if(color) bit |= this.gl.COLOR_BUFFER_BIT
+    if(depth) bit |= this.gl.DEPTH_BUFFER_BIT
+    if(stencil) bit |= this.gl.STENCIL_BUFFER_BIT
+    this.gl.clear(bit)
   }
   update() {
     this.clear()

@@ -51,8 +51,7 @@ let tex2 = new Texture("./texture.png")
 let origin = new Mesh(
   new BoxGeometry(1, 1, 1),
   new PhongMaterial({
-    mainTexture:tex,
-    specular
+    mainTexture:tex
   }),
   new Shader(vshader2, fshader2, {
     mainTexture: tex
@@ -120,8 +119,6 @@ defer.init(gl)
 function render(dt) {
   origin.transform.orientation.multiply(quat1)
   mesh.transform.orientation.multiply(quat1)
-  renderer.clear()
-
   //fb2.activate(gl)
   renderer.update()
   //fb2.deactivate(gl)
