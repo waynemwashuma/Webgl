@@ -25,5 +25,5 @@ void main(){
   vec3 finalColor = initialColor * (diffuse);
   
   color = vec4(diffuse * initialColor,1.0);
-  //color = vec4(finalColor,1.0);
+  //color = vec4(normal,1.0);
 }

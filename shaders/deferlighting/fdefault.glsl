@@ -23,7 +23,7 @@ float calcBrightness(vec3 normal, vec3 dir) {
 }
 
 void main(){
-  normal = vec4(v_normal,1.0);
+  normal = vec4(normalize(v_normal),1.0);
   color = texture(mainTexture,v_uv);
   position = v_position;
 }

@@ -50,6 +50,10 @@ let tex2 = new Texture("./texture.png")
 
 let origin = new Mesh(
   new BoxGeometry(1, 1, 1),
+  new PhongMaterial({
+    mainTexture:tex,
+    specular
+  }),
   new Shader(vshader2, fshader2, {
     mainTexture: tex
   })
@@ -118,13 +122,13 @@ function render(dt) {
   mesh.transform.orientation.multiply(quat1)
   renderer.clear()
 
-  fb2.activate(gl)
+  //fb2.activate(gl)
   renderer.update()
-  fb2.deactivate(gl)
+  //fb2.deactivate(gl)
   //fb2.copy(gl,fb)
 
   //console.log(gl.getError());
-  defer.renderGL(gl)
+  //defer.renderGL(gl)
   requestAnimationFrame(render)
   angle += Math.PI / 1000
 
