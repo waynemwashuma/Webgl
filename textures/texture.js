@@ -1,22 +1,30 @@
+import { TextureWrap, TextureFormat, TextureFilter, GlDataType } from '../constants.js';
+
 export class Texture {
+  /**
+   * @type {WebGLTexture}
+   */
   webglTex = null
   /**
-   * @type {string}
+   * @param {TextureSettings} setting
    */
-  src = null
-  /**
-   * @param {HTMLImageElement} gl
-   */
-  constructor(url) {
-    this.src = url
+  constructor(settings = {}) {
+    settings.generateMipmaps = settings.generateMipmaps ?? true
+    settings.wrapS = settings.wrapS ?? TextureWrap.REPEAT
+    settings.wrapT = settings.wrapT ?? TextureWrap.REPEAT
+    settings.minfilter = settings.minfilter ?? TextureFilter.LINEAR
+    settings.magfilter = settings.magfilter ?? TextureFilter.LINEAR
+    settings.format = settings.format ?? TextureFormat.RGBA
+    settings.internalFormat = settings.internalFormat ?? TextureFormat.RGBA
+    settings.dataFormat = settings.dataFormat ?? GlDataType.UNSIGNED_SHORT
+    settings.src = settings.src || ""
+    this.settings = settings
   }
   /**
    * @param {WebGLRenderingContext} gl
    */
   init(gl) {
-    if(this.webglTex) return
-    let texture = loadTexture(gl, this.src)
-    this.webglTex = texture
+    this.webglTex = loadTexture(gl, this.settings)
   }
   /**
    * @param {WebGLRenderingContext} gl
@@ -28,30 +36,35 @@ export class Texture {
 }
 /**
  * @param {WebGLRenderingContext} gl
+ * @param {string} url
+ * @param {Required<TextureSettings>} settings
  */
-function loadTexture(gl, url) {
+function loadTexture(gl, settings) {
   const texture = gl.createTexture()
+  const level = 0
+  const width = 1
+  const height = 1
+  const border = 0
+  const internalFormat = gl.RGBA
+  const srcFormat = gl.RGBA
+  const srcType = gl.UNSIGNED_BYTE
+  const pixel = new Uint8Array([255, 0, 255, 255])
+
   gl.bindTexture(gl.TEXTURE_2D, texture)
-
-  const level = 0;
-  const internalFormat = gl.RGBA;
-  const srcFormat = gl.RGBA;
-  const srcType = gl.UNSIGNED_BYTE;
-  const pixel = new Uint8Array([0, 0, 255, 255]);
-
   gl.texImage2D(
     gl.TEXTURE_2D,
     level,
     internalFormat,
-    1,
-    1,
-    0,
+    width,
+    height,
+    border,
     srcFormat,
     srcType,
     pixel,
   );
 
   const image = new Image();
+  image.src = settings.src
   image.onload = () => {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(
@@ -62,20 +75,23 @@ function loadTexture(gl, url) {
       srcType,
       image,
     )
-
-    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-      gl.generateMipmap(gl.TEXTURE_2D);
-    } else {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    }
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, settings.wrapS)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, settings.wrapT)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, settings.minfilter)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, settings.magfilter)
+    if (settings.generateMipmap)
+      gl.generateMipmap(gl.TEXTURE_2D)
   }
-  image.src = url;
-
   return texture;
 }
-
-function isPowerOf2(value) {
-  return (value & (value - 1)) === 0;
-}
+/***
+ * @typedef TextureSettings
+ * @property {string} src
+ * @property {boolean} [generatemipmap=true]
+ * @property {TextureWrap} [wraps]
+ * @property {TextureWrap} [wrapT]
+ * @property {TextureFormat} [internalFormat]
+ * @property {TextureFormat} [format]
+ * @property {TextureFilter} [minfilter]
+ * @property {TextureFilter.LINEAR | TextureFilter.NEAREST} [magfilter]
+ */

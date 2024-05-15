@@ -40,18 +40,18 @@ let camera = renderer.camera
  * @type {WebGL2RenderingContext}
  */
 let gl = renderer.gl
-const vshader = await fetch("./shaders/deferlighting/vdefer.glsl").then(e=>e.text())
-const fshader = await fetch("./shaders/deferlighting/fdefer.glsl").then(e=>e.text())
-const vshader2 = await fetch("./shaders/deferlighting/vdefault.glsl").then(e=>e.text())
-const fshader2 = await fetch("./shaders/deferlighting/fdefault.glsl").then(e=>e.text())
+const vshader = await fetch("./shaders/deferlighting/vdefer.glsl").then(e => e.text())
+const fshader = await fetch("./shaders/deferlighting/fdefer.glsl").then(e => e.text())
+const vshader2 = await fetch("./shaders/deferlighting/vdefault.glsl").then(e => e.text())
+const fshader2 = await fetch("./shaders/deferlighting/fdefault.glsl").then(e => e.text())
 
-let tex = new Texture("./UV_Grid_Lrg.jpg")
-let tex2 = new Texture("./texture.png")
-
+let tex = new Texture({
+  src: "./UV_Grid_Lrg.jpg"
+})
 let origin = new Mesh(
   new BoxGeometry(1, 1, 1),
   new PhongMaterial({
-    mainTexture:tex
+    mainTexture: tex
   }),
   new Shader(vshader2, fshader2, {
     mainTexture: tex
@@ -71,66 +71,18 @@ camera.transform.position.z = 2
 renderer.add(origin)
 //renderer.add(mesh)
 
-let quat1 = new Quaternion()
-let euler = new Vector3(Math.PI / 1000, Math.PI / 1000, 0)
+const quat1 = new Quaternion()
+const euler = new Vector3(Math.PI / 1000, Math.PI / 1000, 0)
 quat1.setFromEuler(euler)
 
 let angle = 0
 
-
-
-
-let ext = gl.getExtension("EXT_color_buffer_float")
-let fb2 = new FrameBuffer(100, 100).init(gl)
-  .texColorBuffer(gl, "color", 0)
-  .texColorBuffer(gl, "position", 1, gl.RGBA16F, gl.FLOAT)
-  .texColorBuffer(gl, "normal", 2)
-  .texColorBuffer(gl, "emission", 3)
-  .texColorBuffer(gl, "specular", 4)
-  .texDepthBuffer(gl, false).finalize(gl)
-let colorTex = new Texture()
-let normalTex = new Texture()
-let positionTex = new Texture()
-let emissionTex = new Texture()
-let depthTex = new Texture()
-
-let defer = new Mesh(
-  new QuadGeometry(2, 2),
-  new Shader(vshader, fshader, {
-    colorT: colorTex,
-    normalT: normalTex,
-    positionT: positionTex,
-    emissionT: emissionTex,
-    depthT: depthTex,
-    lightDir: [new Vector3(0, 0.8660, -0.5)],
-    lightColor: [new Color(1, 1, 1)],
-    diffuseIntensity: 1
-  })
-)
-
-colorTex.webglTex = fb2.colorBuffers["color"]
-normalTex.webglTex = fb2.colorBuffers["normal"]
-emissionTex.webglTex = fb2.colorBuffers["emission"]
-positionTex.webglTex = fb2.colorBuffers["position"]
-depthTex.webglTex = fb2.depthBuffer
-
-defer.init(gl)
-
 function render(dt) {
   origin.transform.orientation.multiply(quat1)
   mesh.transform.orientation.multiply(quat1)
-  //fb2.activate(gl)
   renderer.update()
-  //fb2.deactivate(gl)
-  //fb2.copy(gl,fb)
-
-  //console.log(gl.getError());
-  //defer.renderGL(gl)
   requestAnimationFrame(render)
   angle += Math.PI / 1000
 
 }
 render()
-
-//console.log(mesh.geometry.attributes);
-//console.log(fb2)
