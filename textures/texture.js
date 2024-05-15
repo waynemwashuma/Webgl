@@ -16,7 +16,7 @@ export class Texture {
     settings.magfilter = settings.magfilter ?? TextureFilter.LINEAR
     settings.format = settings.format ?? TextureFormat.RGBA
     settings.internalFormat = settings.internalFormat ?? TextureFormat.RGBA
-    settings.dataFormat = settings.dataFormat ?? GlDataType.UNSIGNED_SHORT
+    settings.dataFormat = settings.dataFormat ?? GlDataType.UNSIGNED_BYTE
     settings.src = settings.src || ""
     this.settings = settings
   }
@@ -45,21 +45,18 @@ function loadTexture(gl, settings) {
   const width = 1
   const height = 1
   const border = 0
-  const internalFormat = gl.RGBA
-  const srcFormat = gl.RGBA
-  const srcType = gl.UNSIGNED_BYTE
   const pixel = new Uint8Array([255, 0, 255, 255])
 
   gl.bindTexture(gl.TEXTURE_2D, texture)
   gl.texImage2D(
     gl.TEXTURE_2D,
     level,
-    internalFormat,
+    settings.internalFormat,
     width,
     height,
     border,
-    srcFormat,
-    srcType,
+    settings.format,
+    settings.dataFormat,
     pixel,
   );
 
@@ -70,9 +67,9 @@ function loadTexture(gl, settings) {
     gl.texImage2D(
       gl.TEXTURE_2D,
       level,
-      internalFormat,
-      srcFormat,
-      srcType,
+      settings.internalFormat,
+      settings.format,
+      settings.dataFormat,
       image,
     )
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, settings.wrapS)
@@ -94,4 +91,5 @@ function loadTexture(gl, settings) {
  * @property {TextureFormat} [format]
  * @property {TextureFilter} [minfilter]
  * @property {TextureFilter.LINEAR | TextureFilter.NEAREST} [magfilter]
+ * @property {GlDataType} dataFormat
  */
