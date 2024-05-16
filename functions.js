@@ -5,7 +5,7 @@ import {
   ATTR_POSITION_NAME,
   ATTR_NORMAL_NAME,
   ATTR_UV_NAME,
-  UniformTypes
+  UniformType
 } from "./constants.js"
 
 /**
@@ -203,38 +203,38 @@ export function getUniformLoc(gl, program, name) {
 export function sizeofUniform(uniform) {
   const type = uniform.type
   switch (type) {
-    case UniformTypes.INT:
-    case UniformTypes.FLOAT:
-    case UniformTypes.BOOL:
-    case UniformTypes.TEXTURE:
+    case UniformType.INT:
+    case UniformType.FLOAT:
+    case UniformType.BOOL:
+    case UniformType.TEXTURE:
       return 1
-    case UniformTypes.MAT4:
+    case UniformType.MAT4:
       return 16
-    case UniformTypes.MAT3:
+    case UniformType.MAT3:
       return 9
-    case UniformTypes.VEC2:
+    case UniformType.VEC2:
       return 2
-    case UniformTypes.VEC3:
+    case UniformType.VEC3:
       return 3 //Special Case
-    case UniformTypes.VEC4:
-    case UniformTypes.MAT2:
+    case UniformType.VEC4:
+    case UniformType.MAT2:
       return 4
-    case UniformTypes.ARR_FLOAT:
+    case UniformType.ARR_FLOAT:
       return uniform.value.length
-    case UniformTypes.ARR_FLOAT:
-    case UniformTypes.ARR_BOOL:
-    case UniformTypes.ARR_INT:
+    case UniformType.ARR_FLOAT:
+    case UniformType.ARR_BOOL:
+    case UniformType.ARR_INT:
       return uniform.value.length
-    case UniformTypes.ARR_VEC2:
+    case UniformType.ARR_VEC2:
       return uniform.value.length * 2
-    case UniformTypes.ARR_VEC3:
+    case UniformType.ARR_VEC3:
       return uniform.value.length * 3
-    case UniformTypes.ARR_VEC4:
-    case UniformTypes.ARR_MAT2:
+    case UniformType.ARR_VEC4:
+    case UniformType.ARR_MAT2:
       return uniform.value.length * 4
-    case UniformTypes.ARR_MAT3:
+    case UniformType.ARR_MAT3:
       return uniform.value.length * 9
-    case UniformTypes.ARR_MAT4:
+    case UniformType.ARR_MAT4:
       return uniform.value.length * 16
     default:
       return 0
@@ -246,31 +246,31 @@ export function typeOfUniform(uniform) {
   let type = typeof uniform
 
   if (type == "boolean")
-    return UniformTypes.BOOL
+    return UniformType.BOOL
   if (type == "number")
-    return UniformTypes.FLOAT
+    return UniformType.FLOAT
   if (type == "object") {
     if (name === "vec2")
-      return UniformTypes.VEC2
+      return UniformType.VEC2
     if (name === "vector3")
-      return UniformTypes.VEC3
+      return UniformType.VEC3
     if (name === "vec4" || name === "color")
-      return UniformTypes.VEC4
+      return UniformType.VEC4
     if (name === "mat2")
-      return UniformTypes.MAT2
+      return UniformType.MAT2
     if (name === "mat3")
-      return UniformTypes.MAT3
+      return UniformType.MAT3
     if (name === "matrix4")
-      return UniformTypes.MAT4
+      return UniformType.MAT4
     if (name === "texture")
-      return UniformTypes.TEXTURE
+      return UniformType.TEXTURE
     if (name === "array") {
       let eltype = typeOfUniform(uniform[0])
       return convertToArrUniType(eltype)
     }
-    return UniformTypes.ARR
+    return UniformType.ARR
     if (name === "object")
-      return UniformTypes.STRUCT
+      return UniformType.STRUCT
     //Todo : add UBO for objects here
   }
   throw "Unsupported type of uniform value  \'" + name + "\'";
@@ -278,22 +278,22 @@ export function typeOfUniform(uniform) {
 
 function convertToArrUniType(type) {
   switch (type) {
-    case UniformTypes.INT:
-      return UniformTypes.ARR_INT
-    case UniformTypes.FLOAT:
-      return UniformTypes.ARR_FLOAT
-    case UniformTypes.BOOL:
-      return UniformTypes.ARR_BOOL
-    case UniformTypes.MAT4:
-      return UniformTypes.ARR_MAT4
-    case UniformTypes.MAT3:
-      return UniformTypes.ARR_MAT3
-    case UniformTypes.VEC2:
-      return UniformTypes.ARR_VEC2
-    case UniformTypes.VEC3:
-      return UniformTypes.ARR_VEC3
-    case UniformTypes.VEC4:
-      return UniformTypes.ARR_VEC4
+    case UniformType.INT:
+      return UniformType.ARR_INT
+    case UniformType.FLOAT:
+      return UniformType.ARR_FLOAT
+    case UniformType.BOOL:
+      return UniformType.ARR_BOOL
+    case UniformType.MAT4:
+      return UniformType.ARR_MAT4
+    case UniformType.MAT3:
+      return UniformType.ARR_MAT3
+    case UniformType.VEC2:
+      return UniformType.ARR_VEC2
+    case UniformType.VEC3:
+      return UniformType.ARR_VEC3
+    case UniformType.VEC4:
+      return UniformType.ARR_VEC4
     default:
       return 0
   }
@@ -335,19 +335,19 @@ export class UBO {
 
   static getSize(type) { //[Alignment,Size]
     switch (type) {
-      case UniformTypes.INT:
-      case UniformTypes.FLOAT:
-      case UniformTypes.BOOL:
+      case UniformType.INT:
+      case UniformType.FLOAT:
+      case UniformType.BOOL:
         return 4
-      case UniformTypes.MAT4:
+      case UniformType.MAT4:
         return 64 //16*4
-      case UniformTypes.MAT3:
+      case UniformType.MAT3:
         return 48 //16*3
-      case UniformTypes.VEC2:
+      case UniformType.VEC2:
         return 8
-      case UniformTypes.VEC3:
+      case UniformType.VEC3:
         return 16 //Special Case
-      case UniformTypes.VEC4:
+      case UniformType.VEC4:
         return 16
       default:
         return 0
@@ -381,7 +381,7 @@ export class UBO {
         if (i > 0) data[i - 1].chunkLen += chunk
         chunk = 16
       } else if (tsize < 0 && chunk == 16) {} else if (tsize == 0) {
-        if (type == UniformTypes.VEC3 && chunk == 16) chunk -= 12;
+        if (type == UniformType.VEC3 && chunk == 16) chunk -= 12;
         else chunk = 16;
 
       } else chunk -= size
