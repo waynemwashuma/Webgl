@@ -1,5 +1,5 @@
 import { Matrix4 } from "./matrix4.js"
-import { Vector3 } from "./vec3.js"
+import { Vector3 } from "./vector3.js"
 import { Quaternion } from "./quaternion.js"
 
 let _position = new Vector3()
