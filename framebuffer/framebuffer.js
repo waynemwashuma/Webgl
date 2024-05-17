@@ -1,12 +1,7 @@
 export class FrameBuffer {
-  _to = null
-  _from = null
-  initResize = true
-  colorattachment = 0
+  buffer
   colorBuffers = {}
   aryDrawBuf = []
-  enabledepthbuffer = true
-  colorbufferno = 0
   width = 0
   height = 0
   constructor(width, height) {
@@ -29,8 +24,6 @@ export class FrameBuffer {
    * @param {WebGL2RenderingContext} gl
    */
   finalize(gl) {
-    gl.drawBuffers(this.aryDrawBuf);
-    validateFrameBuffer(gl)
     gl.bindTexture(gl.TEXTURE_2D, null)
     gl.bindRenderbuffer(gl.RENDERBUFFER, null)
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -64,34 +57,11 @@ export class FrameBuffer {
   /**
    * @param {WebGL2RenderingContext} gl
    */
-  multiSampleColorBuffer(gl, name, colorIndex, sampleSize = 4) {
-    let buf = gl.createRenderbuffer()
-
-    gl.bindRenderbuffer(gl.RENDERBUFFER, buf);
-
-    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, sampleSize, gl.RGBA8, this.width, this.height);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + colorIndex, gl.RENDERBUFFER, buf);
-
-    this.aryDrawBuf.push(gl.COLOR_ATTACHMENT0 + colorIndex);
-    this.colorBuffers[name] = buf;
-    return this;
-  }
-  /**
-   * @param {WebGL2RenderingContext} gl
-   */
-  depthBuffer(gl, isMultiSample = false) {
+  depthBuffer(gl) {
     this.depthBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthBuffer);
-
-    if (!isMultiSample) {
-      gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16,
-        this.width, this.height);
-    } else {
-      gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4,
-        gl.DEPTH_COMPONENT16,
-        this.width, this.height);
-    }
-
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16,
+      this.width, this.height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthBuffer);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null)
     return this;
@@ -119,12 +89,14 @@ export class FrameBuffer {
    */
   activate(gl) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffer)
+    gl.drawBuffers(this.aryDrawBuf)
   }
   /**
    * @param {WebGL2RenderingContext} gl
    */
   deactivate(gl) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0])
   }
   /**
    * @param {WebGL2RenderingContext} gl
@@ -147,8 +119,8 @@ export class FrameBuffer {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
   }
-  update(gl){
-    
+  update(gl) {
+
   }
   /**
    * @param {WebGL2RenderingContext} gl
@@ -167,16 +139,6 @@ export class FrameBuffer {
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
   }
-  
-  pipeTo(framebuffer,from = true){
-    this._to = framebuffer
-    if(from)framebuffer.pipeFrom(this,false)
-    
-  }
-  pipeFrom(framebuffer,to = true){
-    this._from = framebuffer
-    if(to)this.pipeTo(this,false)
-  }
   /**
    * @param {WebGL2RenderingContext} gl
    */
@@ -187,7 +149,8 @@ export class FrameBuffer {
   }
 }
 
-function validateFrameBuffer(gl) {
+export function validateFrameBuffer(gl,framebuffer) {
+  gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer.buffer)
   switch (gl.checkFramebufferStatus(gl.FRAMEBUFFER)) {
     case gl.FRAMEBUFFER_COMPLETE:
       break;
@@ -210,4 +173,5 @@ function validateFrameBuffer(gl) {
       console.log("RENDERBUFFER_SAMPLES");
       break;
   }
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null)
 }

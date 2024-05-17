@@ -1,5 +1,5 @@
 import { Shader } from "./shader.js"
-import { Color,Vector3 } from "../Math/index.js"
+import { Color, Vector3 } from "../Math/index.js"
 
 let vshader =
   `#version 300 es
@@ -39,6 +39,7 @@ let fshader =
   in vec3 camDirection;
   
   uniform sampler2D mainTexture;
+  uniform sampler2D mainz;
   uniform vec3 lightDir;
   uniform float ambientIntensity;
   uniform vec4 ambientColor;
@@ -60,7 +61,7 @@ let fshader =
  }
  
  void main(){
-    vec3 baseColor = texture(mainTexture,v_uv).xyz * color.xyz;
+    vec3 baseColor = texture(mainz,v_uv).xyz * color.xyz;
     if(baseColor == vec3(0.0,0.0,0.0))
       baseColor = color.xyz;
     vec3 ambient = ambientColor.xyz * ambientIntensity;
@@ -82,6 +83,7 @@ export class PhongMaterial extends Shader {
     let {
       color = new Color(1, 1, 1),
         opacity = 1.0,
+        mains,
         mainTexture = null,
         lightDir = new Vector3(0, 0, -1),
 
@@ -97,6 +99,7 @@ export class PhongMaterial extends Shader {
 
     super(vshader, fshader, {
       color,
+      mains,
       ambientColor,
       ambientIntensity,
       opacity,

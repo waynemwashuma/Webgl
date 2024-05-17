@@ -44,8 +44,7 @@ export class Shader {
         uniform.value
       )
       uniform.size = sizeofUniform(uniform)
-      if (uniform.type === UniformType.TEXTURE)
-        uniform.value.init(gl)
+      //if (uniform.type === UniformType.TEXTURE)
       //TODO - warn if location is null.
       uniform.location = gl.getUniformLocation(this.program, name)
     }
@@ -103,12 +102,8 @@ function updateUniform(gl, uniform, offset) {
   const arr = new Float32Array(uniform.size)
   switch (uniform.type) {
     case UniformType.BOOL:
-      gl.uniform1f(uniform.location, uniform.value)
-      break
-    case UniformType.INT:
-      gl.uniform1i(uniform.location, uniform.value)
-      break
     case UniformType.FLOAT:
+    case UniformType.INT:
       gl.uniform1f(uniform.location, uniform.value)
       break
     case UniformType.VEC2:
@@ -178,9 +173,6 @@ function updateUniform(gl, uniform, offset) {
       break
     case UniformType.ARR_FLOAT:
     case UniformType.ARR_BOOL:
-
-
-
       break
   }
 }
