@@ -1,4 +1,4 @@
-import { Transform3D } from "../math/transform.js"
+import { Transform3D } from "../math/index.js"
 import {
   UNI_CAM_MAT,
   UNI_PROJ_MAT,
@@ -13,7 +13,7 @@ export class Mesh {
     this.geometry = geometry
     this.material = material
   }
-  init(gl,camera) {
+  init(gl) {
     this.material.setUniform(UNI_MODEL_MAT,this.transform.matrix)
     this.material.init(gl)
     this.geometry.init(gl,this.material.program)
