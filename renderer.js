@@ -1,5 +1,5 @@
 import { Camera } from "./camera.js"
-import { createUBO } from "./functions.js"
+import { createUBO } from "./core/index.js"
 
 export class Renderer {
   _ubocounter = 0
@@ -18,10 +18,10 @@ export class Renderer {
   constructor(canvas) {
     this.domElement = canvas || document.createElement("canvas")
     this.dpr = devicePixelRatio
-    
+
     this.gl = canvas.getContext("webgl2")
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    
+
     if (this.culling) {
       this.gl.enable(this.gl.CULL_FACE)
       this.gl.cullFace(this.gl.BACK)
@@ -31,7 +31,7 @@ export class Renderer {
     }
     if (this.alphaBlending) {
       this.gl.enable(this.gl.BLEND)
-      this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA)
+      this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
     }
     this.setGlobalUBO("camera", {
       "view": this.camera.view,
@@ -63,7 +63,7 @@ export class Renderer {
   }
 
   add(mesh) {
-    mesh.init(this.gl, this.camera)
+    mesh.init(this.gl)
     for (var name in this._UBOs) {
       let ubo = this._UBOs[name]
 
@@ -76,11 +76,11 @@ export class Renderer {
     let id = this.meshes.indexOf(mesh)
     this.meshes.splice(id, 1)
   }
-  clear(color = true,depth = true,stencil = true) {
+  clear(color = true, depth = true, stencil = true) {
     let bit = 0
-    if(color) bit |= this.gl.COLOR_BUFFER_BIT
-    if(depth) bit |= this.gl.DEPTH_BUFFER_BIT
-    if(stencil) bit |= this.gl.STENCIL_BUFFER_BIT
+    if (color) bit |= this.gl.COLOR_BUFFER_BIT
+    if (depth) bit |= this.gl.DEPTH_BUFFER_BIT
+    if (stencil) bit |= this.gl.STENCIL_BUFFER_BIT
     this.gl.clear(bit)
   }
   update() {
