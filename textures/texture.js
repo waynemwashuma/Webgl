@@ -10,12 +10,13 @@ export class Texture {
    */
   constructor(settings = {}) {
     settings.generateMipmaps = settings.generateMipmaps ?? true
+    settings.flipY = settings.flipY ?? true
     settings.wrapS = settings.wrapS ?? TextureWrap.REPEAT
     settings.wrapT = settings.wrapT ?? TextureWrap.REPEAT
     settings.minfilter = settings.minfilter ?? TextureFilter.LINEAR
     settings.magfilter = settings.magfilter ?? TextureFilter.LINEAR
     settings.format = settings.format ?? TextureFormat.RGBA
-    settings.internalFormat = settings.internalFormat ?? TextureFormat.RGBA
+    settings.internalFormat = settings.internalFormat ?? settings.format
     settings.dataFormat = settings.dataFormat ?? GlDataType.UNSIGNED_BYTE
     settings.src = settings.src || ""
     this.settings = settings
@@ -58,11 +59,15 @@ function loadTexture(gl, settings) {
     settings.format,
     settings.dataFormat,
     pixel,
-  );
-
-  const image = new Image();
+  )
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, settings.wrapS)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, settings.wrapT)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, settings.minfilter)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, settings.magfilter)
+  const image = new Image()
   image.src = settings.src
   image.onload = () => {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, settings.flipY)
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(
       gl.TEXTURE_2D,
@@ -72,10 +77,6 @@ function loadTexture(gl, settings) {
       settings.dataFormat,
       image,
     )
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, settings.wrapS)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, settings.wrapT)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, settings.minfilter)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, settings.magfilter)
     if (settings.generateMipmap)
       gl.generateMipmap(gl.TEXTURE_2D)
   }
@@ -87,9 +88,11 @@ function loadTexture(gl, settings) {
  * @property {boolean} [generatemipmap=true]
  * @property {TextureWrap} [wraps]
  * @property {TextureWrap} [wrapT]
+ * @property {TextureWrap} [wrapR]
  * @property {TextureFormat} [internalFormat]
  * @property {TextureFormat} [format]
  * @property {TextureFilter} [minfilter]
  * @property {TextureFilter.LINEAR | TextureFilter.NEAREST} [magfilter]
- * @property {GlDataType} dataFormat
+ * @property {GlDataType} [dataformat]
+ * @property {boolean} [flipY=true]
  */
