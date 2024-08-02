@@ -15,8 +15,7 @@ export class Vector3 {
     return this
 
   }
-
-  setScalar(scalar) {
+  splat(scalar) {
     this.x = scalar;
     this.y = scalar;
     this.z = scalar;
