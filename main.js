@@ -1,11 +1,16 @@
 import { Renderer } from "./renderer.js"
 import {
-  rotatingCube
+  rotatingCube,
+  textureWrap,
+  materials
 } from "./examples/index.js"
+
 const canvas = document.getElementById("can")
 const renderer = new Renderer(canvas)
 const demos = {
   "rotating cube": rotatingCube,
+  "texture wrap": textureWrap,
+  "materials": materials
 }
 renderer.setViewport(innerWidth, innerHeight)
 
@@ -25,13 +30,14 @@ function setupOpts(demos) {
   container.style.position = "absolute"
   canvas.before(container)
 
-  for (let name in demos) {
+  for (const name in demos) {
     const opt = document.createElement("option")
-    opt.innerText = name
+    opt.append(document.createTextNode(name))
     opts.append(opt)
   }
   opts.onchange = e => {
     localStorage.setItem("play", e.target.value)
+    renderer.clearMeshes()
     demos[e.target.value](renderer)
   }
 }
