@@ -2,7 +2,7 @@ import { Geometry } from "./geometry.js"
 import { Attribute } from "../attributes/index.js"
 
 
-export class UVShereGeometry extends Geometry {
+export class UVSphereGeometry extends Geometry {
   constructor(radius = 1, numSegments = 20, numRings = 30) {
     super()
 
