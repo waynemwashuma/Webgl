@@ -9,8 +9,12 @@ in vec3 position;
 in vec2 uv;
 in vec3 normal;
 
-uniform mat4 view;
-uniform mat4 projection;
+uniform camera {
+  mat4 view;
+  mat4 projection;
+  vec3 camPosition;
+};
+
 uniform mat4 model;
 
 out vec2 v_uv;
@@ -31,11 +35,16 @@ let fshader =
   in vec2 v_uv;
   
   out vec4 finalColor;
+  
+  vec3 tint(vec3 texColor, vec3 tint){
+  
+    if (texColor == vec3(0.0, 0.0, 0.0))
+      return tint;
+    return texColor * tint;
+  }
   void main(){
-    finalColor = texture(mainTexture,v_uv) * color ;
-    finalColor.a = opacity;
-    if(finalColor.xyz == vec3(0.0,0.0,0.0))
-       finalColor = color;
+    vec4 sampleColor = texture(mainTexture,v_uv);
+    finalColor.xyz = tint(sampleColor.xyz,color.xyz);
     finalColor.a = opacity;
 }
 `
@@ -43,8 +52,8 @@ let blankOptions = {}
 export class BasicMaterial extends Shader {
   constructor(options = blankOptions) {
     let {
-      color = new Color(0, 1, 1),
-        opacity = 0.99999,
+      color = new Color(1, 1, 1),
+        opacity = 1.0,
         texture = null,
     } = options
 
