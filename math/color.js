@@ -144,6 +144,13 @@ export class Color {
 
     return array
   }
+  
+  *[Symbol.iterator](){
+    yield this.r
+    yield this.b
+    yield this.g
+    yield this.a
+  }
 }
 
 export { Color as default };
