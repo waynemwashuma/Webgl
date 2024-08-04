@@ -69,12 +69,14 @@ export class Renderer {
 
       mesh.material.prepareUBO(this.gl, ubo)
     }
-
     this.meshes.push(mesh)
   }
   remove(mesh) {
     let id = this.meshes.indexOf(mesh)
     this.meshes.splice(id, 1)
+  }
+  clearMeshes(){
+    this.meshes.length = 0
   }
   clear(color = true, depth = true, stencil = true) {
     let bit = 0
