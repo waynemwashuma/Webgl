@@ -1,4 +1,3 @@
-//import { createVAO } from "../functions.js"
 import {
   ATTR_POSITION_LOC,
   ATTR_NORMAL_LOC,
@@ -9,7 +8,7 @@ import {
 } from "../constants.js"
 
 export class Geometry {
-  constructor(positions = [], indices, normals, uv) {
+  constructor() {
     this._VAO = null
     this._attributes = {}
   }
@@ -17,12 +16,7 @@ export class Geometry {
    * @param {WebGL2RenderingContext} gl
    */
   init(gl, program) {
-    /*this._VAO = createVAO(gl,
-      this._attributes["indices"],
-      this._attributes["position"],
-      this._attributes["normal"],
-      this._attributes["uv"]
-    )/**/
+    
     this._VAO = createVAO(gl, this.attributes, program)
   }
   setAttribute(name, attribute) {
@@ -62,7 +56,6 @@ function createVAO(gl, attributes, program) {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer)
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(dict.value), gl.STATIC_DRAW)
-    //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
   }
   gl.bindVertexArray(null)
   gl.bindBuffer(gl.ARRAY_BUFFER, null)
