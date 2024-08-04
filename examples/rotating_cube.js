@@ -9,8 +9,6 @@ import {
 } from "../math/index.js"
 
 export function rotatingCube(renderer) {
-  const quat1 = new Quaternion()
-  const euler = new Vector3(Math.PI / 1000, Math.PI / 1000, 0)
   const tex = new Texture({
     src: "./assets/uv.jpg"
   })
@@ -24,12 +22,13 @@ export function rotatingCube(renderer) {
       diffuseIntensity: 0.1
     })
   )
-  quat1.setFromEuler(euler)
   tex.init(renderer.gl)
-  renderer.setViewport(innerWidth, innerHeight)
   renderer.camera.transform.position.z = 2
   renderer.camera.makePerspective(120)
   renderer.add(origin)
+  
+  const euler = new Vector3(Math.PI / 1000, Math.PI / 1000, 0)
+  const quat1 = new Quaternion().setFromEuler(euler)
   setInterval(() => {
     origin.transform.orientation.multiply(quat1)
   }, 100 / 6)
