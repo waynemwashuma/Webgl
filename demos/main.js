@@ -2,12 +2,14 @@ import { Renderer } from "webgllis"
 import {
   rotatingCube,
   textureWrap,
-  materials
+  materials,
+  drawModes
 } from "./samples/index.js"
 
 const canvas = document.getElementById("can")
 const renderer = new Renderer(canvas)
 const demos = {
+  "drawModes": drawModes,
   "rotating cube": rotatingCube,
   "texture wrap": textureWrap,
   "materials": materials
