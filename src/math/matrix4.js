@@ -1,4 +1,4 @@
-import { mat4 } from "/math/glMatrix.js"
+import { mat4 } from "./glMatrix.js"
 
 let arr = [],
   arr2 = [],

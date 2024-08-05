@@ -1,9 +1,9 @@
-import { Renderer } from "./renderer.js"
+import { Renderer } from "webgllis"
 import {
   rotatingCube,
   textureWrap,
   materials
-} from "./examples/index.js"
+} from "./samples/index.js"
 
 const canvas = document.getElementById("can")
 const renderer = new Renderer(canvas)

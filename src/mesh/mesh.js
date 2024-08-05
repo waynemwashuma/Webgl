@@ -4,7 +4,7 @@ import {
   UNI_PROJ_MAT,
   UNI_MODEL_MAT,
   ATTR_POSITION_NAME
-} from "../constants.js"
+} from "../constant.js"
 
 export class Mesh {
   transform = new Transform3D()

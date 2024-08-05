@@ -1,5 +1,5 @@
 import { Geometry } from "./geometry.js"
-import { Attribute } from "../attributes/index.js"
+import { Attribute } from "../core/index.js"
 
 
 export class BoxGeometry extends Geometry {

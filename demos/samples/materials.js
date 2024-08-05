@@ -1,7 +1,14 @@
-import { Mesh } from "../meshes/mesh.js"
-import { BasicMaterial, LambertMaterial, PhongMaterial } from "../material/index.js"
-import { BoxGeometry, UVSphereGeometry } from "../geometry/index.js"
-import { Vector3, Quaternion, Color } from "../math/index.js"
+import {
+  Mesh,
+  BasicMaterial,
+  LambertMaterial,
+  PhongMaterial,
+  BoxGeometry,
+  UVSphereGeometry,
+  Vector3,
+  Quaternion,
+  Color
+} from "webgllis"
 
 export function materials(renderer) {
   const geometry1 = new BoxGeometry(1, 1)
@@ -11,7 +18,7 @@ export function materials(renderer) {
   new LambertMaterial({
       lightDir: new Vector3(0, -1, -1).normalize(),
       specularShininess: 4,
-      specularStrength: 0.06,
+      specularStrength: 0.6,
       diffuseIntensity: 1
     }),
   new PhongMaterial({

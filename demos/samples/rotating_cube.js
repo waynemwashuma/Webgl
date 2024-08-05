@@ -1,12 +1,12 @@
-import { Mesh } from "../meshes/mesh.js"
-import { Texture } from "../textures/index.js"
-import { PhongMaterial } from "../material/index.js"
-import { BoxGeometry } from "../geometry/index.js"
 import {
+  Mesh,
+  Texture,
+  PhongMaterial,
+  BoxGeometry,
   Vector3,
   Quaternion,
   Color
-} from "../math/index.js"
+} from 'webgllis';
 
 export function rotatingCube(renderer) {
   const tex = new Texture({
@@ -26,7 +26,7 @@ export function rotatingCube(renderer) {
   renderer.camera.transform.position.z = 2
   renderer.camera.makePerspective(120)
   renderer.add(origin)
-  
+
   const euler = new Vector3(Math.PI / 1000, Math.PI / 1000, 0)
   const quat1 = new Quaternion().setFromEuler(euler)
   setInterval(() => {

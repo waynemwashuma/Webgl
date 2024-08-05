@@ -1,5 +1,5 @@
-import { Camera } from "./camera.js"
-import { createUBO } from "./core/index.js"
+import { Camera } from "../camera.js"
+import { createUBO } from "../core/index.js"
 
 export class Renderer {
   _ubocounter = 0

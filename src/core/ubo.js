@@ -1,5 +1,5 @@
-import { typeOfUniform } from "../functions.js"
-import { UniformType } from "../constants.js"
+import { typeOfUniform } from "../function.js"
+import { UniformType } from "../constant.js"
 /**
  * @param {WebGL2RenderingContext} gl
  */

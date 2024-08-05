@@ -6,7 +6,7 @@ import {
   ATTR_NORMAL_NAME,
   ATTR_UV_NAME,
   UniformType
-} from "./constants.js"
+} from "./constant.js"
 /**
  * @param {WebGLRenderingContext} gl
  */

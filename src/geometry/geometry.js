@@ -5,7 +5,7 @@ import {
   ATTR_POSITION_NAME,
   ATTR_NORMAL_NAME,
   ATTR_UV_NAME
-} from "../constants.js"
+} from "../constant.js"
 
 export class Geometry {
   constructor() {

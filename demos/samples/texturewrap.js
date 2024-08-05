@@ -1,13 +1,13 @@
-import { Mesh } from "../meshes/mesh.js"
-import { Texture } from "../textures/index.js"
-import { PhongMaterial } from "../material/index.js"
-import { QuadGeometry } from "../geometry/index.js"
 import {
+  Mesh,
+  Texture,
+  PhongMaterial,
+  QuadGeometry,
   Vector3,
   Quaternion,
-  Color
-} from "../math/index.js"
-import { TextureWrap } from "../constants.js"
+  Color,
+  TextureWrap
+} from 'webgllis';
 
 export function textureWrap(renderer) {
   const tex1 = new Texture({
@@ -26,7 +26,7 @@ export function textureWrap(renderer) {
     wrapT: TextureWrap.MIRRORREPEAT
 
   })
-  
+
   const geometry = new QuadGeometry(1, 1)
 
   const uvs = geometry._attributes['uv'].value

@@ -1,4 +1,4 @@
-import { Matrix4, Transform3D} from "/math/index.js"
+import { Matrix4, Transform3D} from "./math/index.js"
 
 export class Camera {
   transform = new Transform3D()

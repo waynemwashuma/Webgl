@@ -2,7 +2,7 @@ import {
   createProgramFromSrc,
   typeOfUniform,
   sizeofUniform
-} from "../functions.js"
+} from "../function.js"
 import {
   UNI_CAM_MAT,
   UNI_PROJ_MAT,
@@ -11,7 +11,7 @@ import {
   BlendMode,
   DrawMode,
   CullFace
-} from "../constants.js"
+} from "../constant.js"
 
 export class Shader {
   drawMode = DrawMode.TRIANGLES

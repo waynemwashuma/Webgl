@@ -1,4 +1,4 @@
-import { TextureWrap, TextureFormat, TextureFilter, GlDataType } from '../constants.js';
+import { TextureWrap, TextureFormat, TextureFilter, GlDataType } from '../constant.js';
 
 export class Texture {
   /**
