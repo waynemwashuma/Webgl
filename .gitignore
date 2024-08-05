@@ -1,3 +1,4 @@
-*.jpg
-*.png
-*.jpeg
+node_modules
+dist
+docs
+*.txt
