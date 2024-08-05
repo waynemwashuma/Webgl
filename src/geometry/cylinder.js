@@ -7,16 +7,16 @@ export class CylinderGeometry extends Geometry {
     const { indices, vertices, normals, uvs } = createCylinder(radius, height, numSegments);
 
     this.setAttribute("indices",
-      new Attribute(indices, 1)
+      new Attribute(new Uint16Array(indices), 1)
     )
     this.setAttribute("position",
-      new Attribute(vertices, 3)
+      new Attribute(new Float32Array(vertices), 3)
     )
     this.setAttribute("normal",
-      new Attribute(normals, 3)
+      new Attribute(new Float32Array(normals), 3)
     )
     this.setAttribute("uv",
-      new Attribute(uvs, 2)
+      new Attribute(new Float32Array(uvs), 2)
     )
   }
 }
@@ -50,24 +50,24 @@ function createCylinder(radius, height, numSegments) {
       i / (Math.PI * 2), 0,
       i / (Math.PI * 2), 1,
     )
-    
+
     //uvs.push(0,0,0,1,1,0,1,1)
   }
 
   for (let i = 0; i < vertices.length / 3; i += 3) {
     if (i + 3 >= vertices.length / 3) break
     indices.push(
-      i + 2,i + 1,i,
+      i + 2, i + 1, i,
       i + 2, i + 3, i + 1
     )
     i--
   }
-  
+
   //top part
   offset = vertices.length / 3
   vertices.push(0, 0, halfHeight)
-  uvs.push(0.5,0.5)
-  normals.push(0,0,1)
+  uvs.push(0.5, 0.5)
+  normals.push(0, 0, 1)
   for (let i = 0; i <= (2 * Math.PI); i += angleIncrement) {
     let cos = Math.cos(i)
     let sin = Math.sin(i)
@@ -91,9 +91,9 @@ function createCylinder(radius, height, numSegments) {
   //bottom part
   offset = vertices.length / 3
   vertices.push(0, 0, -halfHeight)
-  uvs.push(0.5,0.5)
-  normals.push(0,0,-1)
-  for (let i =  (2 * Math.PI); i >= 0; i -= angleIncrement) {
+  uvs.push(0.5, 0.5)
+  normals.push(0, 0, -1)
+  for (let i = (2 * Math.PI); i >= 0; i -= angleIncrement) {
     let cos = Math.cos(i)
     let sin = Math.sin(i)
     vertices.push(

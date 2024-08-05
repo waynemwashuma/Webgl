@@ -6,32 +6,32 @@ import { Attribute } from "../core/index.js"
 export class QuadGeometry extends Geometry {
   constructor(w, h) {
     super()
-    let indices = new Attribute([
+    const indices = [
       0, 1, 2,
       0, 2, 3
-    ], 1)
-    let vertices = new Attribute([
+    ]
+    const vertices = [
       0.5 * w, 0.5 * h, 0,
       0.5 * w, -0.5 * h, 0,
       -0.5 * w, -0.5 * h, 0,
       -0.5 * w, 0.5 * h, 0
-    ], 3)
-    let uv = new Attribute([
+    ]
+    const uv = [
        1, 0,
        1, 1,
        0, 1,
        0, 0
-    ], 2)
-    let normals = new Attribute([
+    ]
+    const normals = [
       0.0, 0.0, 1.0,
       0.0, 0.0, 1.0,
       0.0, 0.0, 1.0,
       0.0, 0.0, 1.0
-     ], 3)
+     ]
 
-    this.setAttribute("indices", indices)
-    this.setAttribute("position", vertices)
-    this.setAttribute("normal", normals)
-    this.setAttribute("uv", uv)
+    this.setAttribute("indices", new Attribute(new Uint16Array(indices), 1))
+    this.setAttribute("position", new Attribute(new Float32Array(vertices), 3))
+    this.setAttribute("normal", new Attribute(new Float32Array(normals), 3))
+    this.setAttribute("uv", new Attribute(new Float32Array(uv), 2))
   }
 }

@@ -8,16 +8,16 @@ export class IcosphereGeometry extends Geometry {
     const { indices, vertices, normals, uvs } = createIcoSphere(radius, numSegments);
     
     this.setAttribute("indices",
-      new Attribute(indices, 1)
+      new Attribute(new Uint16Array(indices), 1)
     )
     this.setAttribute("position",
-      new Attribute(vertices, 3)
+      new Attribute(new Float32Array(vertices), 3)
     )
     this.setAttribute("normal", 
-    new Attribute(normals, 3)
+    new Attribute(new Float32Array(normals), 3)
     )
     this.setAttribute("uv",
-      new Attribute(uvs, 2)
+      new Attribute(new Float32Array(uvs), 2)
     )
   }
 }
