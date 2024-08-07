@@ -7,8 +7,8 @@ export class QuadGeometry extends Geometry {
   constructor(w, h) {
     super()
     const indices = [
-      0, 1, 2,
-      0, 2, 3
+      0, 2, 1,
+      0, 3, 2
     ]
     const vertices = [
       0.5 * w, 0.5 * h, 0,

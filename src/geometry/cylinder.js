@@ -57,8 +57,8 @@ function createCylinder(radius, height, numSegments) {
   for (let i = 0; i < vertices.length / 3; i += 3) {
     if (i + 3 >= vertices.length / 3) break
     indices.push(
-      i + 2, i + 1, i,
-      i + 2, i + 3, i + 1
+      i + 2, i, i + 1,
+      i + 2, i + 1, i + 3
     )
     i--
   }
@@ -84,7 +84,7 @@ function createCylinder(radius, height, numSegments) {
     )
   }
   for (let i = offset + 2; i < vertices.length / 3; i++) {
-    indices.push(i - 1, offset, i)
+    indices.push(i - 1, i, offset)
   }
 
 
@@ -110,7 +110,7 @@ function createCylinder(radius, height, numSegments) {
     )
   }
   for (let i = offset + 2; i < vertices.length / 3; i++) {
-    indices.push(i - 1, offset, i)
+    indices.push(i - 1, i, offset)
   }
 
   return { vertices, normals, uvs, indices };

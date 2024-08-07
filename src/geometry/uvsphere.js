@@ -58,7 +58,7 @@ function createUVSphere(radius, numSegments, numRings) {
     for (let j = 0; j < numSegments; j++) {
       const p0 = i * (numSegments + 1) + j;
       const p1 = p0 + numSegments + 1;
-      indices.push(p0, p1, p0 + 1, p1, p1 + 1, p0 + 1);
+      indices.push(p0,p0 + 1, p1, p1,p0 + 1, p1 + 1);
     }
   }
 

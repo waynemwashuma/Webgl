@@ -117,8 +117,8 @@ export class BoxGeometry extends Geometry {
     const indices = []
     for (let i = 0; i < vertices.length / 3; i += 4) {
       indices.push(
-        i, i + 2, i + 1,
-        i, i + 3, i + 2
+        i, i + 1, i + 2,
+        i, i + 2, i + 3
       )
     }
     this.setAttribute("indices",
