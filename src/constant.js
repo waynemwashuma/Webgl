@@ -76,7 +76,8 @@ export const DrawUsage = {
 export const CullFace = {
   FRONT: 0x0404,
   BACK: 0x0405,
-  BOTH: 0x0408
+  BOTH: 0x0408,
+  NONE: 0
 }
 /**
  * @readonly
