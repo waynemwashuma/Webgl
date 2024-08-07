@@ -15,7 +15,7 @@ import {
 
 export class Shader {
   drawMode = DrawMode.TRIANGLES
-  cullFace = CullFace.FRONT
+  cullFace = CullFace.BACK
   distBlendFunc = BlendMode.ONE_MINUS_SRC
   srcBlendFunc = BlendMode.SRC_ALPHA
   /**
