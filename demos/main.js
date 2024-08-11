@@ -4,7 +4,8 @@ import {
   textureWrap,
   materials,
   drawModes,
-  geometries
+  geometries,
+  cullface
 } from "./samples/index.js"
 
 const canvas = document.getElementById("can")
@@ -14,7 +15,8 @@ const demos = {
   "rotating cube": rotatingCube,
   "texture wrap": textureWrap,
   "materials": materials,
-  "geometries": geometries
+  "geometries": geometries,
+  "cullface":cullface
 }
 renderer.setViewport(innerWidth, innerHeight)
 
