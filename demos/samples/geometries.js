@@ -15,7 +15,7 @@ import {
   CullFace
 } from "webgllis"
 
-export function geometries(renderer) {
+export function geometries({renderer}) {
   const texture = new Texture({
     src: './assets/uv.jpg'
   })

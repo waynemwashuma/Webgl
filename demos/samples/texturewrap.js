@@ -9,7 +9,7 @@ import {
   TextureWrap
 } from 'webgllis';
 
-export function textureWrap(renderer) {
+export function textureWrap({renderer}) {
   const tex1 = new Texture({
     src: "./assets/uv.jpg",
     wrapS: TextureWrap.CLAMP,

@@ -9,7 +9,7 @@ import {
   Texture
 } from "webgllis"
 
-export function cullface(renderer) {
+export function cullface({renderer}) {
   const tex = new Texture({
     src: "./assets/uv.jpg"
   })

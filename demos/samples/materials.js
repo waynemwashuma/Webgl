@@ -10,7 +10,7 @@ import {
   Color
 } from "webgllis"
 
-export function materials(renderer) {
+export function materials({renderer}) {
   const geometry1 = new BoxGeometry(1, 1)
   const geometry2 = new UVSphereGeometry(0.7)
   const materials = [

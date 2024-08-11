@@ -11,7 +11,7 @@ import {
   DrawMode
 } from "webgllis"
 
-export function drawModes(renderer) {
+export function drawModes({renderer}) {
   const geometry1 = new QuadGeometry(1, 1)
   const materials = [
     new BasicMaterial(),

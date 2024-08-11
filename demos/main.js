@@ -1,22 +1,23 @@
-import { Renderer } from "webgllis"
+import { Renderer, TextureLoader } from "webgllis"
 import {
   rotatingCube,
   textureWrap,
   materials,
   drawModes,
   geometries,
-  cullface
+  cullface,
 } from "./samples/index.js"
 
 const canvas = document.getElementById("can")
 const renderer = new Renderer(canvas)
+const textureLoader = new Renderer(canvas)
 const demos = {
   "drawModes": drawModes,
   "rotating cube": rotatingCube,
   "texture wrap": textureWrap,
   "materials": materials,
   "geometries": geometries,
-  "cullface":cullface
+  "cullface": cullface
 }
 renderer.setViewport(innerWidth, innerHeight)
 
@@ -53,5 +54,8 @@ function init(demos) {
   if (!name)
     name = Object.keys(demos)[0]
   if (!name) return
-  demos[name](renderer)
+  demos[name]({
+    renderer,
+
+  })
 }

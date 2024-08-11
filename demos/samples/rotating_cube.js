@@ -8,7 +8,7 @@ import {
   Color
 } from 'webgllis';
 
-export function rotatingCube(renderer) {
+export function rotatingCube({renderer}) {
   const tex = new Texture({
     src: "./assets/uv.jpg"
   })
