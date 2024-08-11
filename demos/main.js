@@ -3,7 +3,8 @@ import {
   rotatingCube,
   textureWrap,
   materials,
-  drawModes
+  drawModes,
+  geometries
 } from "./samples/index.js"
 
 const canvas = document.getElementById("can")
@@ -12,7 +13,8 @@ const demos = {
   "drawModes": drawModes,
   "rotating cube": rotatingCube,
   "texture wrap": textureWrap,
-  "materials": materials
+  "materials": materials,
+  "geometries": geometries
 }
 renderer.setViewport(innerWidth, innerHeight)
 
