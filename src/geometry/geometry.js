@@ -15,9 +15,9 @@ export class Geometry {
   /**
    * @param {WebGL2RenderingContext} gl
    */
-  init(gl, program) {
+  init(gl) {
     
-    this._VAO = createVAO(gl, this.attributes, program)
+    this._VAO = createVAO(gl, this.attributes)
   }
   setAttribute(name, attribute) {
     this._attributes[name] = attribute
@@ -31,7 +31,7 @@ export class Geometry {
   }
 }
 
-function createVAO(gl, attributes, program) {
+function createVAO(gl, attributes) {
   let vao = gl.createVertexArray()
   gl.bindVertexArray(vao)
   let location = 0
