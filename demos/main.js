@@ -10,7 +10,11 @@ import {
 
 const canvas = document.getElementById("can")
 const renderer = new Renderer(canvas)
-const textureLoader = new Renderer(canvas)
+const textureLoader = new TextureLoader(renderer)
+const manager = {
+  renderer,
+  textureLoader
+}
 const demos = {
   "drawModes": drawModes,
   "rotating cube": rotatingCube,
@@ -19,7 +23,13 @@ const demos = {
   "geometries": geometries,
   "cullface": cullface
 }
+
 renderer.setViewport(innerWidth, innerHeight)
+
+textureLoader.load({
+  src: "./assets/uv.jpg",
+  name: 'uv'
+})
 
 init(demos)
 setupOpts(demos)
@@ -45,7 +55,7 @@ function setupOpts(demos) {
   opts.onchange = e => {
     localStorage.setItem("play", e.target.value)
     renderer.clearMeshes()
-    demos[e.target.value](renderer)
+    demos[e.target.value](manager)
   }
 }
 
@@ -54,8 +64,5 @@ function init(demos) {
   if (!name)
     name = Object.keys(demos)[0]
   if (!name) return
-  demos[name]({
-    renderer,
-
-  })
+  demos[name](manager)
 }

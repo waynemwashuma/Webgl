@@ -9,10 +9,11 @@ import {
   Texture
 } from "webgllis"
 
-export function cullface({renderer}) {
-  const tex = new Texture({
-    src: "./assets/uv.jpg"
-  })
+export function cullface({
+  renderer,
+  textureLoader
+}) {
+  const tex = textureLoader.get('uv')
   const geometry = new QuadGeometry(1, 1)
   const materials = [
     new BasicMaterial({
@@ -34,7 +35,6 @@ export function cullface({renderer}) {
   materials[2].cullFace = CullFace.BACK
   materials[3].cullFace = CullFace.BOTH
   
-  tex.init(renderer.gl)
   //create meshes
   const meshes = materials.map(material => new Mesh(geometry, material))
 

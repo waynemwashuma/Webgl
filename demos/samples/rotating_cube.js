@@ -8,10 +8,11 @@ import {
   Color
 } from 'webgllis';
 
-export function rotatingCube({renderer}) {
-  const tex = new Texture({
-    src: "./assets/uv.jpg"
-  })
+export function rotatingCube({
+  renderer,
+  textureLoader
+}) {
+  const tex = textureLoader.get('uv')
   const origin = new Mesh(
     new BoxGeometry(1, 1, 1),
     new PhongMaterial({
@@ -22,7 +23,6 @@ export function rotatingCube({renderer}) {
       diffuseIntensity: 0.1
     })
   )
-  tex.init(renderer.gl)
   renderer.camera.transform.position.z = 2
   renderer.camera.makePerspective(120)
   renderer.add(origin)

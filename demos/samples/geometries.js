@@ -15,10 +15,11 @@ import {
   CullFace
 } from "webgllis"
 
-export function geometries({renderer}) {
-  const texture = new Texture({
-    src: './assets/uv.jpg'
-  })
+export function geometries({
+  renderer,
+  textureLoader
+}) {
+  const texture = textureLoader.get('uv')
   const material = new BasicMaterial({
     texture
   })
@@ -31,8 +32,6 @@ export function geometries({renderer}) {
     new IcosphereGeometry(0.7),
     new CylinderGeometry(0.7),
   ]
-  //initialize texture
-  texture.init(renderer.gl)
 
   //create meshes
   const meshes = geometries.map(geometry => new Mesh(geometry, material))
