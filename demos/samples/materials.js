@@ -15,13 +15,13 @@ export function materials(renderer) {
   const geometry2 = new UVSphereGeometry(0.7)
   const materials = [
     new BasicMaterial(),
-  new LambertMaterial({
+    new LambertMaterial({
       lightDir: new Vector3(0, -1, -1).normalize(),
       specularShininess: 4,
       specularStrength: 0.6,
       diffuseIntensity: 1
     }),
-  new PhongMaterial({
+    new PhongMaterial({
       lightDir: new Vector3(-1, -1, -1).normalize(),
       specularShininess: 4,
       specularStrength: 2,
