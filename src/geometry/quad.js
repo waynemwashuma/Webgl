@@ -4,7 +4,7 @@ import { Attribute } from "../core/index.js"
 
 
 export class QuadGeometry extends Geometry {
-  constructor(w, h) {
+  constructor(w = 1, h = 1) {
     super()
     const indices = [
       0, 2, 1,
