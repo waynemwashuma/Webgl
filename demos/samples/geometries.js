@@ -2,6 +2,7 @@ import {
   Mesh,
   BasicMaterial,
   CircleGeometry,
+  PlaneGeometry,
   BoxGeometry,
   UVSphereGeometry,
   IcosphereGeometry,
@@ -23,7 +24,6 @@ export function geometries({
   const material = new BasicMaterial({
     texture
   })
-  material.drawMode = DrawMode.TRIANGLES
   const geometries = [
     new QuadGeometry(1, 1),
     new CircleGeometry(0.7),
