@@ -26,6 +26,11 @@ export class UBO {
    * @param {Float32Array} data
    */
   update(gl, name, data) {
+    
+    //hack - data should always be a float32array.
+    if(typeof data === "number"){
+      data = new Float32Array(data)
+    }
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.buffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER,
       this.items[name].offset, data, 0,
