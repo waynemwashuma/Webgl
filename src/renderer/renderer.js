@@ -111,7 +111,7 @@ export class Renderer {
     )
     for (var i = 0; i < this.meshes.length; i++) {
       this.meshes[i].update()
-      this.meshes[i].renderGL(this.gl, this.camera.view)
+      this.meshes[i].renderGL(this.gl)
     }
   }
   setViewport(w, h) {
